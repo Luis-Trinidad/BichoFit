@@ -13,13 +13,25 @@
 
 <script lang="ts">
     import { Link, router } from '@inertiajs/svelte';
+    import Play from '@lucide/svelte/icons/play';
     import AppHead from '@/components/AppHead.svelte';
     import { Badge } from '@/components/ui/badge';
     import { Button } from '@/components/ui/button';
     import { Card, CardContent } from '@/components/ui/card';
-    import { show, store as startSession } from '@/routes/workout-sessions';
     import { cn } from '@/lib/utils';
-    import Play from '@lucide/svelte/icons/play';
+    import { show, store as startSession } from '@/routes/workout-sessions';
+
+    interface RoutineItemPreview {
+        name: string;
+        target: string | null;
+        imageUrl?: string | null;
+    }
+
+    interface RoutineRow {
+        id: number;
+        name: string;
+        items: RoutineItemPreview[];
+    }
 
     interface RecentSession {
         id: number;
@@ -27,12 +39,6 @@
         exercises: number;
         sets: number;
         volumeKg: number;
-    }
-
-    interface RoutineRow {
-        id: number;
-        name: string;
-        exercises: number;
     }
 
     let {
@@ -53,14 +59,24 @@
         );
     }
 
-    // --- arranque con cuenta regresiva ---
-    let selectedRoutineId = $state<number | null>(null); // null = entrenamiento libre
+    // --- asistente de arranque: elegir → ver → confirmar ---
+    let wizardOpen = $state(false);
+    let pickedId = $state<number | null>(null); // null = entrenamiento libre
+    let step = $state<'elegir' | 'detalle'>('elegir');
     let countdown = $state<number | null>(null);
 
-    const selectedRoutine = $derived(routines.find((r) => r.id === selectedRoutineId) ?? null);
+    const pickedRoutine = $derived(routines.find((r) => r.id === pickedId) ?? null);
 
-    function comenzar() {
+    function abrirWizard() {
         if (countdown !== null) return;
+        pickedId = null;
+        step = 'elegir';
+        wizardOpen = true;
+    }
+
+    function lanzar(routineId: number | null) {
+        pickedId = routineId;
+        wizardOpen = false;
         countdown = 3;
     }
 
@@ -75,7 +91,7 @@
             countdown = null;
             router.post(
                 startSession().url,
-                selectedRoutineId ? { routine_id: selectedRoutineId } : {},
+                pickedId !== null ? { routine_id: pickedId } : {},
             );
         }, 1000);
 
@@ -127,46 +143,12 @@
         </Card>
     {:else}
         <Card>
-            <CardContent class="flex flex-col gap-4 py-6">
-                <div class="flex flex-col items-center gap-1 text-center">
-                    <p class="text-lg font-semibold">¿Listo para entrenar?</p>
-                    <p class="text-sm text-muted-foreground">Elige tu rutina o entrena libre.</p>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    <p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">Rutina</p>
-                    <div class="flex flex-wrap gap-2">
-                        <button
-                            class={cn(
-                                'rounded-full border px-3 py-1.5 text-sm font-medium transition-all active:scale-95',
-                                selectedRoutineId === null
-                                    ? 'border-primary bg-primary text-primary-foreground'
-                                    : 'bg-background text-muted-foreground hover:bg-muted',
-                            )}
-                            onclick={() => (selectedRoutineId = null)}
-                        >
-                            Libre
-                        </button>
-                        {#each routines as routine (routine.id)}
-                            <button
-                                class={cn(
-                                    'rounded-full border px-3 py-1.5 text-sm font-medium transition-all active:scale-95',
-                                    selectedRoutineId === routine.id
-                                        ? 'border-primary bg-primary text-primary-foreground'
-                                        : 'bg-background text-muted-foreground hover:bg-muted',
-                                )}
-                                onclick={() => (selectedRoutineId = routine.id)}
-                            >
-                                {routine.name}
-                                <span class="ml-1 opacity-70">{routine.exercises}</span>
-                            </button>
-                        {/each}
-                    </div>
-                </div>
-
-                <Button size="lg" class="h-14 gap-2 text-base font-semibold" onclick={comenzar}>
+            <CardContent class="flex flex-col items-center gap-3 py-8 text-center">
+                <p class="text-lg font-semibold">¿Listo para entrenar?</p>
+                <p class="text-sm text-muted-foreground">Elige tu rutina y dale con todo.</p>
+                <Button size="lg" class="h-14 w-full max-w-xs gap-2 text-base font-semibold" onclick={abrirWizard}>
                     <Play class="size-5 fill-current" />
-                    Comenzar{selectedRoutine ? ` · ${selectedRoutine.name}` : ''}
+                    Comenzar
                 </Button>
             </CardContent>
         </Card>
@@ -219,10 +201,119 @@
     </section>
 </div>
 
+{#if wizardOpen}
+    <div class="fixed inset-0 z-50 flex flex-col bg-background">
+        <header class="flex items-center justify-between border-b px-4 py-3">
+            <button
+                class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+                onclick={() => {
+                    if (step === 'detalle') {
+                        step = 'elegir';
+                    } else {
+                        wizardOpen = false;
+                    }
+                }}
+            >
+                ← {step === 'detalle' ? 'Cambiar' : 'Cerrar'}
+            </button>
+            <p class="text-sm font-semibold">
+                {step === 'detalle' ? (pickedRoutine?.name ?? 'Entrenamiento libre') : '¿Qué toca hoy?'}
+            </p>
+            <span class="w-14"></span>
+        </header>
+
+        <div class="flex-1 overflow-y-auto px-4 py-4">
+            {#if step === 'elegir'}
+                <div class="mx-auto flex max-w-lg flex-col gap-2">
+                    <button
+                        class="flex items-center justify-between rounded-xl border bg-background px-4 py-4 text-left transition-colors hover:bg-muted/60 active:scale-[0.98]"
+                        onclick={() => lanzar(null)}
+                    >
+                        <span>
+                            <span class="block font-semibold">Entrenamiento libre</span>
+                            <span class="block text-xs text-muted-foreground">
+                                Armas los ejercicios en el momento
+                            </span>
+                        </span>
+                        <Play class="size-5 text-muted-foreground" />
+                    </button>
+                    {#each routines as routine (routine.id)}
+                        <button
+                            class="flex items-center justify-between rounded-xl border bg-background px-4 py-4 text-left transition-colors hover:bg-muted/60 active:scale-[0.98]"
+                            onclick={() => {
+                                pickedId = routine.id;
+                                step = 'detalle';
+                            }}
+                        >
+                            <span>
+                                <span class="block font-semibold">{routine.name}</span>
+                                <span class="block text-xs text-muted-foreground">
+                                    {routine.items.length} ejercicios
+                                </span>
+                            </span>
+                            <span class="text-muted-foreground">›</span>
+                        </button>
+                    {/each}
+                </div>
+            {:else if pickedRoutine}
+                <div class="mx-auto flex max-w-lg flex-col gap-3">
+                    {#each pickedRoutine.items as item, index (index)}
+                        <div class="flex items-center gap-3 rounded-xl border bg-background px-3 py-2.5">
+                            <span class="w-5 text-center text-sm font-semibold text-muted-foreground">
+                                {index + 1}
+                            </span>
+                            {#if item.imageUrl}
+                                <img
+                                    src={item.imageUrl}
+                                    alt=""
+                                    loading="lazy"
+                                    class="size-11 shrink-0 rounded-md bg-muted object-contain"
+                                />
+                            {:else}
+                                <div class="flex size-11 shrink-0 items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
+                                    {item.name.slice(0, 2)}
+                                </div>
+                            {/if}
+                            <span class="min-w-0 flex-1">
+                                <span class="block truncate text-sm font-medium">{item.name}</span>
+                                {#if item.target}
+                                    <span class="block text-xs text-muted-foreground">objetivo {item.target}</span>
+                                {/if}
+                            </span>
+                        </div>
+                    {:else}
+                        <p class="py-6 text-center text-sm text-muted-foreground">
+                            Esta rutina no tiene ejercicios todavía.
+                        </p>
+                    {/each}
+                </div>
+            {:else}
+                <div class="mx-auto flex max-w-lg flex-col items-center gap-3 py-10 text-center">
+                    <p class="font-semibold">Entrenamiento libre</p>
+                    <p class="text-sm text-muted-foreground">
+                        Al llegar a la sesión agregas ejercicios del catálogo cuando quieras.
+                    </p>
+                </div>
+            {/if}
+        </div>
+
+        {#if step === 'detalle'}
+            <div class="border-t px-4 pt-3 pb-[max(env(safe-area-inset-bottom),1rem)]">
+                <div class="mx-auto max-w-lg">
+                    <Button size="lg" class="h-14 w-full gap-2 text-base font-semibold" onclick={() => lanzar(pickedId)}>
+                        <Play class="size-5 fill-current" />
+                        Comenzar{pickedRoutine ? ` · ${pickedRoutine.name}` : ''}
+                    </Button>
+                </div>
+            </div>
+        {/if}
+    </div>
+{/if}
+
 {#if countdown !== null}
-    <div class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-background">
+    <div class="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-6 bg-background">
         <p class="text-sm font-medium tracking-wide text-muted-foreground uppercase">
-            {selectedRoutine ? selectedRoutine.name : 'Entrenamiento libre'}
+            {pickedRoutine ? pickedRoutine.name : 'Entrenamiento libre'}
         </p>
         {#key countdown}
             <div

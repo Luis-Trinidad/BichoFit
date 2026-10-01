@@ -46,13 +46,17 @@ class DashboardController extends Controller
                 'volumeKg' => (float) $session->sets->sum(fn ($set) => $set->reps * $set->weight_kg),
             ])->all(),
             'routines' => $user->routines()
-                ->withCount('items')
+                ->with('items.exercise')
                 ->orderBy('name')
                 ->get(['id', 'name'])
                 ->map(fn ($routine) => [
                     'id' => $routine->id,
                     'name' => $routine->name,
-                    'exercises' => $routine->items_count,
+                    'items' => $routine->items->map(fn ($item) => [
+                        'name' => $item->exercise->name,
+                        'target' => $item->target,
+                        'imageUrl' => $item->exercise->imageUrl(),
+                    ])->all(),
                 ])->all(),
         ]);
     }
