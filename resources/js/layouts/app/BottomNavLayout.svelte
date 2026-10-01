@@ -30,11 +30,7 @@
     <header class="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div class="mx-auto flex h-14 w-full max-w-lg items-center justify-between px-4">
             <Link href={dashboard()} class="flex items-center gap-2 font-bold">
-                <div
-                    class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
-                >
-                    <AppLogoIcon class="size-5 fill-current text-white dark:text-black" />
-                </div>
+                <AppLogoIcon class="size-7 fill-current text-primary" />
                 <span class="text-lg tracking-tight">BichoFit</span>
             </Link>
 

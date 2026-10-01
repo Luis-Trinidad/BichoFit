@@ -1,8 +1,8 @@
 <script module lang="ts">
     export const layout = {
-        title: 'Confirm password',
+        title: 'Confirmar contraseña',
         description:
-            'This is a secure area of the application. Please confirm your password before continuing.',
+            'Esta es una zona segura. Confirma tu contraseña para continuar.',
     };
 </script>
 
@@ -22,7 +22,7 @@
     import PasskeyVerify from '@/components/PasskeyVerify.svelte';
 </script>
 
-<AppHead title="Confirm password" />
+<AppHead title="Confirmar contraseña" />
 
 <PasskeyVerify
     routes={{
@@ -38,7 +38,7 @@
     {#snippet children({ errors, processing })}
         <div class="space-y-6">
             <div class="grid gap-2">
-                <Label for="password">Password</Label>
+                <Label for="password">Contraseña</Label>
                 <PasswordInput
                     id="password"
                     name="password"
@@ -57,7 +57,7 @@
                     data-test="confirm-password-button"
                 >
                     {#if processing}<Spinner />{/if}
-                    Confirm password
+                    Confirmar contraseña
                 </Button>
             </div>
         </div>

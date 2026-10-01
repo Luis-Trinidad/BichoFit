@@ -40,7 +40,7 @@
             <button
                 type="button"
                 class="fixed inset-0 bg-black/50"
-                aria-label="Close"
+                aria-label="Cerrar"
                 onclick={() => setOpenMobile(false)}
                 transition:fade={{ duration: 200 }}
             ></button>

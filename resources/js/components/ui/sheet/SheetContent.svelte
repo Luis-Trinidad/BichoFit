@@ -53,7 +53,7 @@
         <button
             type="button"
             class="fixed inset-0 border-0 bg-black/50"
-            aria-label="Close"
+            aria-label="Cerrar"
             onclick={close}
         ></button>
         <div
@@ -69,7 +69,7 @@
             <button
                 type="button"
                 class="ring-offset-background focus-visible:ring-ring absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none"
-                aria-label="Close"
+                aria-label="Cerrar"
                 onclick={close}
             >
                 <X class="size-4" />

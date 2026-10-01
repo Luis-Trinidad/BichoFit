@@ -73,7 +73,7 @@
         class="space-y-4 rounded-lg border border-border bg-muted/50 p-4"
     >
         <div class="grid gap-2">
-            <Label for="passkey-name">Passkey name</Label>
+            <Label for="passkey-name">Nombre del passkey</Label>
             <Input
                 id="passkey-name"
                 type="text"

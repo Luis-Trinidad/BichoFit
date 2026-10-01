@@ -69,13 +69,13 @@
                     onclick={props.onClick}
                 >
                     <Trash2 class="h-4 w-4" />
-                    <span class="sr-only">Remove</span>
+                    <span class="sr-only">Quitar</span>
                 </Button>
             {/snippet}
         </DialogTrigger>
 
         <DialogContent>
-            <DialogTitle>Remove passkey</DialogTitle>
+            <DialogTitle>Quitar passkey</DialogTitle>
             <DialogDescription>
                 Are you sure you want to remove the "{passkey.name}" passkey?
                 You will no longer be able to use it to sign in.

@@ -14,6 +14,7 @@
 <script lang="ts">
     import { Link, router } from '@inertiajs/svelte';
     import Play from '@lucide/svelte/icons/play';
+    import Flame from '@lucide/svelte/icons/flame';
     import AppHead from '@/components/AppHead.svelte';
     import { Badge } from '@/components/ui/badge';
     import { Button } from '@/components/ui/button';
@@ -177,7 +178,10 @@
         </Card>
         <Card>
             <CardContent class="py-4">
-                <p class="text-sm font-medium text-muted-foreground">Racha 🔥</p>
+                <p class="flex items-center gap-1 text-sm font-medium text-muted-foreground">
+                    Racha
+                    <Flame class="size-4 text-primary" />
+                </p>
                 <p class="text-3xl font-bold">
                     {week.streak}
                     <span class="text-base font-normal text-muted-foreground">

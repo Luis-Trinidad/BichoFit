@@ -20,22 +20,22 @@
 <div class="space-y-6">
     <Heading
         variant="small"
-        title="Delete account"
-        description="Delete your account and all of its resources"
+        title="Borrar cuenta"
+        description="Borra tu cuenta y todos tus datos"
     />
     <div
         class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10"
     >
         <div class="relative space-y-0.5 text-red-600 dark:text-red-100">
-            <p class="font-medium">Warning</p>
+            <p class="font-medium">Advertencia</p>
             <p class="text-sm">
-                Please proceed with caution, this cannot be undone.
+                Hazlo con cuidado: esto no se puede deshacer.
             </p>
         </div>
         <Dialog>
             <DialogTrigger>
                 <Button variant="destructive" data-test="delete-user-button"
-                    >Delete account</Button
+                    >Borrar cuenta</Button
                 >
             </DialogTrigger>
             <DialogContent>
@@ -47,7 +47,7 @@
                     {#snippet children({ errors, processing })}
                         <div class="space-y-3">
                             <DialogTitle
-                                >Are you sure you want to delete your account?</DialogTitle
+                                >¿Seguro que quieres borrar tu cuenta?</DialogTitle
                             >
                             <DialogDescription>
                                 Once your account is deleted, all of its
@@ -60,19 +60,19 @@
 
                         <div class="grid gap-2">
                             <Label for="password" class="sr-only"
-                                >Password</Label
+                                >Contraseña</Label
                             >
                             <PasswordInput
                                 id="password"
                                 name="password"
-                                placeholder="Password"
+                                placeholder="Contraseña"
                             />
                             <InputError message={errors.password} />
                         </div>
 
                         <DialogFooter class="gap-2">
                             <DialogClose>
-                                <Button variant="secondary">Cancel</Button>
+                                <Button variant="secondary">Cancelar</Button>
                             </DialogClose>
 
                             <Button
@@ -81,7 +81,7 @@
                                 disabled={processing}
                                 data-test="confirm-delete-user-button"
                             >
-                                Delete account
+                                Borrar cuenta
                             </Button>
                         </DialogFooter>
                     {/snippet}

@@ -79,7 +79,7 @@
                             type="submit"
                             disabled={processing}
                         >
-                            <RefreshCw class="size-4" /> Regenerate codes
+                            <RefreshCw class="size-4" /> Regenerar códigos
                         </Button>
                     {/snippet}
                 </Form>
@@ -115,9 +115,9 @@
                         {/if}
                     </div>
                     <p class="text-xs text-muted-foreground select-none">
-                        Each recovery code can be used once to access your
-                        account and will be removed after use. If you need more,
-                        click <span class="font-bold">Regenerate codes</span> above.
+                        Cada código de recuperación sirve una sola vez para entrar a tu
+                        cuenta y se elimina al usarse. Si necesitas más, toca
+                        <span class="font-bold">Regenerar códigos</span> arriba.
                     </p>
                 </div>
             {/if}

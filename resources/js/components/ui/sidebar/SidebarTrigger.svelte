@@ -23,5 +23,5 @@
     {:else}
         <PanelLeftClose class="size-4" />
     {/if}
-    <span class="sr-only">Toggle sidebar</span>
+    <span class="sr-only">Alternar menú</span>
 </Button>

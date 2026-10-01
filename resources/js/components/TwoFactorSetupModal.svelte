@@ -45,7 +45,7 @@
     const modalConfig: TwoFactorConfigContent = $derived.by(() => {
         if (twoFactorEnabled) {
             return {
-                title: 'Two-factor authentication enabled',
+                title: 'Verificación en dos pasos activada',
                 description:
                     'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
                 buttonText: 'Close',
@@ -54,7 +54,7 @@
 
         if (showVerificationStep) {
             return {
-                title: 'Verify authentication code',
+                title: 'Verificar código',
                 description:
                     'Enter the 6-digit code from your authenticator app',
                 buttonText: 'Continue',
@@ -62,9 +62,9 @@
         }
 
         return {
-            title: 'Enable two-factor authentication',
+            title: 'Activar verificación en dos pasos',
             description:
-                'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
+                'Para terminar de activar la verificación en dos pasos, escanea el código QR o escribe la clave en tu app autenticadora',
             buttonText: 'Continue',
         };
     });

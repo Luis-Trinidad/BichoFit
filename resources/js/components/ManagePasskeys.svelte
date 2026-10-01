@@ -31,7 +31,7 @@
         <Heading
             variant="small"
             title="Passkeys"
-            description="Manage your passkeys for passwordless sign-in"
+            description="Gestiona tus passkeys para entrar sin contraseña"
         />
 
         <div class="overflow-hidden rounded-lg border border-border">

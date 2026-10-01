@@ -26,7 +26,7 @@
         }
 
         return {
-            title: 'Authentication code',
+            title: 'Código de autenticación',
             description:
                 'Enter the authentication code provided by your authenticator application.',
             buttonText: 'login using a recovery code',
@@ -80,7 +80,7 @@
                     <InputError message={errors.code} />
                 </div>
                 <Button type="submit" class="w-full" disabled={processing}
-                    >Continue</Button
+                    >Continuar</Button
                 >
                 <div class="text-center text-sm text-muted-foreground">
                     <span>or you can </span>
@@ -100,12 +100,12 @@
                 <Input
                     name="recovery_code"
                     type="text"
-                    placeholder="Enter recovery code"
+                    placeholder="Escribe el código de recuperación"
                     required
                 />
                 <InputError message={errors.recovery_code} />
                 <Button type="submit" class="w-full" disabled={processing}
-                    >Continue</Button
+                    >Continuar</Button
                 >
 
                 <div class="text-center text-sm text-muted-foreground">

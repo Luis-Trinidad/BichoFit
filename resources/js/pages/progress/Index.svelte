@@ -79,7 +79,7 @@
                     {
                         label: 'Volumen (kg)',
                         data: weeklyVolume.map((week) => Math.round(week.volume)),
-                        backgroundColor: 'rgba(16, 185, 129, 0.55)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.55)',
                         borderRadius: 6,
                     },
                 ],
@@ -111,8 +111,8 @@
                     {
                         label: 'Peso máximo (kg)',
                         data: selected.series.map((point) => point.topWeight),
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.12)',
                         fill: true,
                         tension: 0.3,
                         pointRadius: 4,
@@ -120,7 +120,7 @@
                     {
                         label: '1RM est.',
                         data: selected.series.map((point) => Math.round(point.best1Rm * 10) / 10),
-                        borderColor: 'rgba(249, 115, 22, 1)',
+                        borderColor: 'rgba(165, 180, 252, 1)',
                         borderDash: [6, 4],
                         tension: 0.3,
                         pointRadius: 3,
@@ -156,20 +156,20 @@
                     {
                         label: 'Peso (kg)',
                         data: bodyComp.map((p) => p.weightKg),
-                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
                         tension: 0.3,
                         pointRadius: 4,
                     },
                     {
                         label: 'Músculo (kg)',
                         data: bodyComp.map((p) => p.muscleMassKg),
-                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderColor: 'rgba(129, 140, 248, 1)',
                         tension: 0.3,
                     },
                     {
                         label: 'Grasa (%)',
                         data: bodyComp.map((p) => p.bodyFatPct),
-                        borderColor: 'rgba(249, 115, 22, 1)',
+                        borderColor: 'rgba(199, 210, 254, 1)',
                         yAxisID: 'y1',
                         borderDash: [6, 4],
                         tension: 0.3,
@@ -177,7 +177,7 @@
                     {
                         label: 'Agua (%)',
                         data: bodyComp.map((p) => p.waterPct ?? null),
-                        borderColor: 'rgba(59, 130, 246, 0.9)',
+                        borderColor: 'rgba(167, 139, 250, 1)',
                         yAxisID: 'y1',
                         borderDash: [3, 3],
                         tension: 0.3,

@@ -1,7 +1,7 @@
 <script module lang="ts">
     export const layout = {
-        title: 'Log in to your account',
-        description: 'Enter your email and password below to log in',
+        title: 'Entra a tu cuenta',
+        description: 'Escribe tu correo y contraseña para entrar',
     };
 </script>
 
@@ -23,14 +23,14 @@
 
     let {
         status = '',
-        canResetPassword,
+        canResetContraseña,
     }: {
         status?: string;
-        canResetPassword: boolean;
+        canResetContraseña: boolean;
     } = $props();
 </script>
 
-<AppHead title="Log in" />
+<AppHead title="Entrar" />
 
 {#if status}
     <div class="mb-4 text-center text-sm font-medium text-green-600">
@@ -48,7 +48,7 @@
     {#snippet children({ errors, processing })}
         <div class="grid gap-6">
             <div class="grid gap-2">
-                <Label for="email">Email address</Label>
+                <Label for="email">Correo electrónico</Label>
                 <Input
                     id="email"
                     type="email"
@@ -62,10 +62,10 @@
 
             <div class="grid gap-2">
                 <div class="flex items-center justify-between">
-                    <Label for="password">Password</Label>
-                    {#if canResetPassword}
+                    <Label for="password">Contraseña</Label>
+                    {#if canResetContraseña}
                         <TextLink href={request()} class="text-sm">
-                            Forgot your password?
+                            ¿Olvidaste tu contraseña?
                         </TextLink>
                     {/if}
                 </div>
@@ -74,7 +74,7 @@
                     name="password"
                     required
                     autocomplete="current-password"
-                    placeholder="Password"
+                    placeholder="Contraseña"
                 />
                 <InputError message={errors.password} />
             </div>
@@ -82,7 +82,7 @@
             <div class="flex items-center justify-between">
                 <Label for="remember" class="flex items-center space-x-3">
                     <Checkbox id="remember" name="remember" />
-                    <span>Remember me</span>
+                    <span>Recuérdame</span>
                 </Label>
             </div>
 
@@ -93,13 +93,13 @@
                 data-test="login-button"
             >
                 {#if processing}<Spinner />{/if}
-                Log in
+                Entrar
             </Button>
         </div>
 
         <div class="text-center text-sm text-muted-foreground">
-            Don't have an account?
-            <TextLink href={register()}>Sign up</TextLink>
+            ¿No tienes cuenta?
+            <TextLink href={register()}>Crear cuenta</TextLink>
         </div>
     {/snippet}
 </Form>

@@ -10,14 +10,33 @@
 
 <svg
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 40 42"
+    viewBox="0 0 64 64"
+    fill="none"
     class={className}
     {...rest}
 >
-    <path
-        fill="currentColor"
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M17.2 5.633 8.6.855 0 5.633v26.51l16.2 9 16.2-9v-8.442l7.6-4.223V9.856l-8.6-4.777-8.6 4.777V18.3l-5.6 3.111V5.633ZM38 18.301l-5.6 3.11v-6.157l5.6-3.11V18.3Zm-1.06-7.856-5.54 3.078-5.54-3.079 5.54-3.078 5.54 3.079ZM24.8 18.3v-6.157l5.6 3.111v6.158L24.8 18.3Zm-1 1.732 5.54 3.078-13.14 7.302-5.54-3.078 13.14-7.3v-.002Zm-16.2 7.89 7.6 4.222V38.3L2 30.966V7.92l5.6 3.111v16.892ZM8.6 9.3 3.06 6.222 8.6 3.143l5.54 3.08L8.6 9.3Zm21.8 15.51-13.2 7.334V38.3l13.2-7.334v-6.156ZM9.6 11.034l5.6-3.11v14.6l-5.6 3.11v-14.6Z"
-    />
-</svg>
+      <ellipse cx="32" cy="38" rx="20" ry="23" fill="currentColor" opacity="0.08"></ellipse>
+      <path d="M32 54 Q13 48 11 31 Q13 18 24 21 L32 32 Z" fill="currentColor" opacity="0.2"></path>
+      <path d="M32 54 Q51 48 53 31 Q51 18 40 21 L32 32 Z" fill="currentColor" opacity="0.2"></path>
+      <path d="M32 54 Q13 48 11 31 Q13 18 24 21 L32 32 Z" stroke="currentColor" stroke-width="0.7" stroke-opacity="0.35" fill="none"></path>
+      <path d="M32 54 Q51 48 53 31 Q51 18 40 21 L32 32 Z" stroke="currentColor" stroke-width="0.7" stroke-opacity="0.35" fill="none"></path>
+      <ellipse cx="32" cy="46" rx="9" ry="11.5" fill="currentColor"></ellipse>
+      <ellipse cx="32" cy="31" rx="7.5" ry="7" fill="currentColor"></ellipse>
+      <circle cx="32" cy="20" r="5.5" fill="currentColor"></circle>
+      <line x1="32" y1="24" x2="32" y2="57" stroke="#000" stroke-width="1" stroke-opacity="0.22"></line>
+      <line x1="24" y1="43" x2="40" y2="43" stroke="#000" stroke-width="0.6" stroke-opacity="0.18" stroke-linecap="round"></line>
+      <line x1="24" y1="49" x2="40" y2="49" stroke="#000" stroke-width="0.6" stroke-opacity="0.18" stroke-linecap="round"></line>
+      <line x1="26" y1="54" x2="38" y2="54" stroke="#000" stroke-width="0.6" stroke-opacity="0.18" stroke-linecap="round"></line>
+      <line x1="25" y1="30" x2="11" y2="26" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></line>
+      <line x1="24.5" y1="36" x2="9" y2="36" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></line>
+      <line x1="25" y1="43" x2="12" y2="49" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></line>
+      <line x1="39" y1="30" x2="53" y2="26" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></line>
+      <line x1="39.5" y1="36" x2="55" y2="36" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></line>
+      <line x1="39" y1="43" x2="52" y2="49" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></line>
+      <path d="M29 15.5 Q25 9 19 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"></path>
+      <path d="M35 15.5 Q39 9 45 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"></path>
+      <circle cx="19" cy="6" r="2" fill="currentColor"></circle>
+      <circle cx="45" cy="6" r="2" fill="currentColor"></circle>
+      <circle cx="29.5" cy="19.5" r="1.4" fill="#000" opacity="0.35"></circle>
+      <circle cx="34.5" cy="19.5" r="1.4" fill="#000" opacity="0.35"></circle>
+    </svg>
