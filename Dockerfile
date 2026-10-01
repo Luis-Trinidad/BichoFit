@@ -30,7 +30,8 @@ RUN npm run build
 FROM base
 WORKDIR /app
 
-RUN install-php-extensions pdo_pgsql intl zip exif opcache
+# Tesseract + español para el OCR de la báscula
+RUN apk add --no-cache tesseract-ocr tesseract-ocr-data-spa
 
 COPY --from=vendor /app /app
 COPY --from=frontend /app/public/build /app/public/build

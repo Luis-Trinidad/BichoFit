@@ -38,4 +38,36 @@ class Routine extends Model
     {
         return $this->hasMany(WorkoutSession::class);
     }
+
+    /**
+     * Sincroniza los items con el estado deseado en una transacción:
+     * borra los ausentes, actualiza los que traen id y crea los nuevos.
+     *
+     * @param array<int, array{id?: int|null, exercise_id: int, day_of_week: int, position: int, target?: string|null}> $items
+     */
+    public function syncItems(array $items): void
+    {
+        $this->getConnection()->transaction(function () use ($items) {
+            $wantedIds = collect($items)->pluck('id')->filter()->all();
+
+            $this->items()
+                ->when($wantedIds !== [], fn ($query) => $query->whereNotIn('id', $wantedIds))
+                ->delete();
+
+            foreach ($items as $item) {
+                $attributes = [
+                    'exercise_id' => $item['exercise_id'],
+                    'day_of_week' => $item['day_of_week'],
+                    'position' => $item['position'],
+                    'target' => $item['target'] ?? null,
+                ];
+
+                if (! empty($item['id'])) {
+                    $this->items()->whereKey($item['id'])->update($attributes);
+                } else {
+                    $this->items()->create($attributes);
+                }
+            }
+        });
+    }
 }

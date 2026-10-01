@@ -273,7 +273,9 @@
                             <span>
                                 <span class="block font-semibold">{routine.name}</span>
                                 <span class="block text-xs text-muted-foreground">
-                                    {routine.items.length} ejercicios
+                                    {routine.days.length === 1
+                                        ? `${routine.days[0].items.length} ejercicios`
+                                        : `${routine.days.length} días · ${routine.days.reduce((total, day) => total + day.items.length, 0)} ejercicios`}
                                 </span>
                             </span>
                             <span class="text-muted-foreground">›</span>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRoutineRequest;
+use App\Http\Requests\UpdateRoutineRequest;
 use App\Models\Exercise;
 use App\Models\Routine;
 use App\Models\RoutineItem;
@@ -79,11 +80,23 @@ class RoutineController extends Controller
         ]);
     }
 
-    public function update(StoreRoutineRequest $request, Routine $routine)
+    /**
+     * Guardado por lotes: recibe el estado completo deseado de la rutina
+     * (nombre + items con día/posición/objetivo) y lo sincroniza en una
+     * transacción — borra los quitados, actualiza los existentes y crea
+     * los nuevos (sin id).
+     */
+    public function update(UpdateRoutineRequest $request, Routine $routine)
     {
         $this->authorize('update', $routine);
 
-        $routine->update($request->validated());
+        $validated = $request->validated();
+
+        $routine->update(collect($validated)->only(['name', 'notes'])->all());
+
+        if (array_key_exists('items', $validated)) {
+            $routine->syncItems($validated['items']);
+        }
 
         return back();
     }

@@ -170,3 +170,12 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* Sin barras de scroll visibles: sensación de app nativa */
+* {
+    scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}

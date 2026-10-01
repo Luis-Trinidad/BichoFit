@@ -65,7 +65,7 @@
     </header>
 
     <main class="flex-1 overflow-y-auto overscroll-contain">
-        <div class="mx-auto w-full max-w-lg pb-24">
+        <div class="mx-auto w-full max-w-lg pb-28">
             {@render children?.()}
         </div>
     </main>

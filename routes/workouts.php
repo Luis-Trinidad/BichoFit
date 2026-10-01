@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\BodyScanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\RoutineController;
+use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\RoutineItemController;
 use App\Http\Controllers\Workout\HistoryController;
 use App\Http\Controllers\Workout\SessionController;
@@ -28,6 +30,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->whereNumber('set')->name('workout-sets.destroy');
 
     Route::get('history', [HistoryController::class, 'index'])->name('history.index');
+
+    Route::get('body-scans', [BodyScanController::class, 'index'])->name('body-scans.index');
+    Route::post('body-scans/ocr', [BodyScanController::class, 'ocr'])->name('body-scans.ocr');
+    Route::post('body-scans', [BodyScanController::class, 'store'])->name('body-scans.store');
+    Route::delete('body-scans/{scan}', [BodyScanController::class, 'destroy'])
+        ->whereNumber('scan')->name('body-scans.destroy');
+
+    Route::get('progress', ProgressController::class)->name('progress.show');
+    Route::get('progress/{exercise}', ProgressController::class)->whereNumber('exercise')->name('progress.exercise');
 
     Route::get('exercises', [ExerciseController::class, 'index'])->name('exercises.index');
     Route::get('exercises/{exercise}', [ExerciseController::class, 'show'])
