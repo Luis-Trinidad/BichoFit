@@ -79,21 +79,25 @@
     const routineOrder = $derived(new Map(routinePlan.map((item, index) => [item.exerciseId, index])));
     const routineTargets = $derived(new Map(routinePlan.map((item) => [item.exerciseId, item.target ?? ''])));
 
-    /** Series objetivo desde un texto tipo "3x8-12" → 3; sin patrón → null. */
-    function targetSets(exerciseId: number): number | null {
+    /** Objetivo "4x10" / "4x8-12" → {sets:4, reps:10}; sin patrón → null. */
+    function parseTarget(exerciseId: number): { sets: number; reps: number } | null {
         const target = routineTargets.get(exerciseId) ?? '';
-        const match = /^(\d+)\s*[x×]/i.exec(target.trim());
+        const match = /^(\d+)\s*[x×]\s*(\d+)(?:\s*-\s*\d+)?/i.exec(target.trim());
 
-        return match ? Number(match[1]) : null;
+        return match ? { sets: Number(match[1]), reps: Number(match[2]) } : null;
+    }
+
+    function targetSets(exerciseId: number): number | null {
+        return parseTarget(exerciseId)?.sets ?? null;
     }
 
     type BlockState = 'pendiente' | 'en-curso' | 'completado';
 
     function blockState(exerciseId: number, setCount: number): BlockState {
         if (setCount === 0) return 'pendiente';
-        const goal = targetSets(exerciseId);
+        const goal = parseTarget(exerciseId);
 
-        return goal === null || setCount >= goal ? 'completado' : 'en-curso';
+        return goal === null || setCount >= goal.sets ? 'completado' : 'en-curso';
     }
 
     // Ejercicios de la sesión; si hay rutina, en su orden (los extra al final)
@@ -186,8 +190,12 @@
     function prefill(exerciseId: number): { reps: string; weight: string } {
         const inSession = session.sets.filter((s) => s.exerciseId === exerciseId).at(-1);
         const previous = lastByExercise[String(exerciseId)];
-        const source = inSession ?? previous;
-        return { reps: source ? String(source.reps) : '', weight: source ? String(source.weightKg) : '' };
+        const goal = parseTarget(exerciseId);
+
+        return {
+            reps: String(inSession?.reps ?? goal?.reps ?? previous?.reps ?? ''),
+            weight: String(inSession?.weightKg ?? previous?.weightKg ?? ''),
+        };
     }
 
     function addSet(exerciseId: number) {
@@ -411,6 +419,17 @@
                 {/each}
 
                 {#if isActive}
+                    {@const goal = parseTarget(block.exerciseId)}
+                    {@const enSlot = goal !== null && block.sets.length < goal.sets}
+                    {@const ghosts = goal !== null ? Math.max(0, goal.sets - block.sets.length - 1) : 0}
+                    {#if enSlot}
+                        <p class="mt-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                            Serie {block.sets.length + 1} de {goal?.sets}
+                            {#if goal?.reps}
+                                · objetivo {goal.reps} reps
+                            {/if}
+                        </p>
+                    {/if}
                     {@const values = draft[block.exerciseId] ?? prefill(block.exerciseId)}
                     <SetEntryForm
                         bind:reps={values.reps}
@@ -420,6 +439,14 @@
                             addSet(block.exerciseId);
                         }}
                     />
+                    {#if ghosts > 0}
+                        {#each Array(ghosts) as _, i (i)}
+                            <div class="flex items-center gap-2 rounded-md border border-dashed px-2 py-1.5 text-muted-foreground">
+                                <span class="w-4 text-xs">{block.sets.length + 2 + i}.</span>
+                                <span class="text-xs">serie pendiente{goal?.reps ? ` · ${goal.reps} reps` : ''}</span>
+                            </div>
+                        {/each}
+                    {/if}
                 {/if}
             </CardContent>
         </Card>
