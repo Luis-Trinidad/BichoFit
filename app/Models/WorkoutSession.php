@@ -22,8 +22,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['date', 'routine_id', 'notes', 'started_at', 'finished_at'])]
-class WorkoutSession extends Model
+#[Fillable(['date', 'routine_id', 'notes', 'started_at', 'finished_at'])] class WorkoutSession extends Model
 {
     /** @use HasFactory<WorkoutSessionFactory> */
     use HasFactory;
@@ -46,6 +45,11 @@ class WorkoutSession extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function routine(): BelongsTo
+    {
+        return $this->belongsTo(Routine::class);
     }
 
     public function sets(): HasMany

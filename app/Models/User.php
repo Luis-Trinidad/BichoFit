@@ -46,6 +46,11 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->hasMany(WorkoutSession::class);
     }
 
+    public function routines(): HasMany
+    {
+        return $this->hasMany(Routine::class);
+    }
+
     /** Todas las series del usuario a través de sus sesiones. */
     public function workoutSets(): HasManyThrough
     {
