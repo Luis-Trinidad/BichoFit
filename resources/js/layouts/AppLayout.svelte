@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
-    import AppLayout from '@/layouts/app/AppSidebarLayout.svelte';
+    import BottomNavLayout from '@/layouts/app/BottomNavLayout.svelte';
     import type { BreadcrumbItem } from '@/types';
 
     let {
@@ -12,6 +12,6 @@
     } = $props();
 </script>
 
-<AppLayout {breadcrumbs}>
+<BottomNavLayout {breadcrumbs}>
     {@render children?.()}
-</AppLayout>
+</BottomNavLayout>
