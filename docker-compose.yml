@@ -12,11 +12,11 @@ services:
       APP_KEY: ${APP_KEY:-}
       # Con dominio: SERVER_NAME=bichofit.tudominio.com:443 (TLS automático)
       SERVER_NAME: ${SERVER_NAME:-:8080}
-      DB_CONNECTION: pgsql
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_DATABASE: bichofit
-      DB_USERNAME: bichofit
+      DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_DATABASE: ${DB_DATABASE:-bichofit}
+      DB_USERNAME: ${DB_USERNAME:-bichofit}
       DB_PASSWORD: ${DB_PASSWORD:-secret}
     ports:
       - '${APP_PORT:-8080}:8080'
