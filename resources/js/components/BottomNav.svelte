@@ -11,7 +11,8 @@
     import { index as historyIndex } from '@/routes/history';
     import { index as routinesIndex } from '@/routes/routines';
 
-    const { currentUrl, isCurrentOrParentUrl } = currentUrlState();
+    // Mantener el objeto (no destructurar): currentUrl es un getter reactivo
+    const url = currentUrlState();
 
     const items = [
         { title: 'Hoy', href: dashboard(), icon: Dumbbell },
@@ -29,7 +30,7 @@
         class="flex w-full max-w-md items-center gap-1 rounded-full border bg-background/90 p-1.5 shadow-lg shadow-black/10 ring-1 ring-black/5 backdrop-blur dark:ring-white/10"
     >
         {#each items as item (item.title)}
-            {@const active = isCurrentOrParentUrl(item.href, currentUrl)}
+            {@const active = url.isCurrentOrParentUrl(item.href, url.currentUrl)}
             <Link
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
