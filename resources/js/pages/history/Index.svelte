@@ -76,12 +76,16 @@
 
     {#if sessions.last_page > 1}
         <div class="flex items-center justify-between pt-2">
-            <Button variant="outline" size="sm" disabled={!sessions.prev_page_url} href={sessions.prev_page_url ?? '#'}>
-                Anterior
+            <Button variant="outline" size="sm" disabled={!sessions.prev_page_url} asChild>
+                {#snippet children(props)}
+                    <Link {...props} href={sessions.prev_page_url ?? '#'}>Anterior</Link>
+                {/snippet}
             </Button>
             <span class="text-sm text-muted-foreground">{sessions.current_page} / {sessions.last_page}</span>
-            <Button variant="outline" size="sm" disabled={!sessions.next_page_url} href={sessions.next_page_url ?? '#'}>
-                Siguiente
+            <Button variant="outline" size="sm" disabled={!sessions.next_page_url} asChild>
+                {#snippet children(props)}
+                    <Link {...props} href={sessions.next_page_url ?? '#'}>Siguiente</Link>
+                {/snippet}
             </Button>
         </div>
     {/if}

@@ -17,6 +17,7 @@
     import AppHead from '@/components/AppHead.svelte';
     import ExerciseDetailDialog from '@/components/ExerciseDetailDialog.svelte';
     import ExercisePickerDialog from '@/components/ExercisePickerDialog.svelte';
+    import SetEntryForm from '@/components/SetEntryForm.svelte';
     import { Badge } from '@/components/ui/badge';
     import { Button } from '@/components/ui/button';
     import {
@@ -299,36 +300,14 @@
 
                 {#if isActive}
                     {@const values = draft[block.exerciseId] ?? prefill(block.exerciseId)}
-                    <form
-                        class="mt-2 flex items-center gap-2"
-                        onsubmit={(event) => {
-                            event.preventDefault();
+                    <SetEntryForm
+                        bind:reps={values.reps}
+                        bind:weight={values.weight}
+                        onsubmit={() => {
                             draft[block.exerciseId] = values;
                             addSet(block.exerciseId);
                         }}
-                    >
-                        <Input
-                            type="number"
-                            inputmode="numeric"
-                            placeholder="reps"
-                            class="h-9 w-20"
-                            bind:value={values.reps}
-                            aria-label="Repeticiones"
-                            required
-                        />
-                        <span class="text-sm text-muted-foreground">×</span>
-                        <Input
-                            type="number"
-                            inputmode="decimal"
-                            step="0.5"
-                            placeholder="kg"
-                            class="h-9 w-24"
-                            bind:value={values.weight}
-                            aria-label="Peso en kg"
-                            required
-                        />
-                        <Button size="sm" type="submit" class="ml-auto">Serie +</Button>
-                    </form>
+                    />
                 {/if}
             </CardContent>
         </Card>

@@ -71,7 +71,13 @@
             <CardContent class="flex flex-col items-center gap-3 py-8 text-center">
                 <p class="text-lg font-semibold">Tienes una sesión en curso</p>
                 <p class="text-sm text-muted-foreground">Empezada hace {sinceLabel}</p>
-                <Button size="lg" href={show({ session: activeSession.id }).url}>Continuar entrenamiento</Button>
+                <Button size="lg" asChild>
+                    {#snippet children(props)}
+                        <Link {...props} href={show({ session: activeSession.id }).url}>
+                            Continuar entrenamiento
+                        </Link>
+                    {/snippet}
+                </Button>
             </CardContent>
         </Card>
     {:else}
