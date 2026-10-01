@@ -245,10 +245,14 @@
     });
 
     function formatElapsed(ms: number): string {
-        const totalMinutes = Math.floor(ms / 60000);
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        return hours > 0 ? `${hours} h ${minutes} min` : `${minutes} min`;
+        const totalSeconds = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        const mm = String(minutes).padStart(2, '0');
+        const ss = String(seconds).padStart(2, '0');
+
+        return hours > 0 ? `${hours}:${mm}:${ss}` : `${mm}:${ss}`;
     }
 
     const dateLabel = $derived(
@@ -267,9 +271,12 @@
         <div class="flex items-start justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-bold capitalize">{dateLabel}</h1>
-                <p class="text-sm text-muted-foreground">
+                <p class="flex items-center gap-2 text-sm text-muted-foreground">
                     {#if isActive}
-                        En curso · {elapsed} · {session.sets.length} series
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 font-mono text-base font-bold tabular-nums text-primary">
+                            {elapsed}
+                        </span>
+                        en curso · {session.sets.length} series
                     {:else}
                         Terminado · {session.sets.length} series
                     {/if}

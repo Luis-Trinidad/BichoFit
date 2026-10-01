@@ -18,6 +18,8 @@
     import { Button } from '@/components/ui/button';
     import { Card, CardContent } from '@/components/ui/card';
     import { show, store as startSession } from '@/routes/workout-sessions';
+    import { cn } from '@/lib/utils';
+    import Play from '@lucide/svelte/icons/play';
 
     interface RecentSession {
         id: number;
@@ -51,10 +53,53 @@
         );
     }
 
+    // --- arranque con cuenta regresiva ---
+    let selectedRoutineId = $state<number | null>(null); // null = entrenamiento libre
+    let countdown = $state<number | null>(null);
+
+    const selectedRoutine = $derived(routines.find((r) => r.id === selectedRoutineId) ?? null);
+
+    function comenzar() {
+        if (countdown !== null) return;
+        countdown = 3;
+    }
+
+    $effect(() => {
+        if (countdown === null) return;
+        const timer = setTimeout(() => {
+            if (countdown > 1) {
+                countdown -= 1;
+
+                return;
+            }
+            countdown = null;
+            router.post(
+                startSession().url,
+                selectedRoutineId ? { routine_id: selectedRoutineId } : {},
+            );
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    });
+
+    // --- contador en vivo de la sesión activa ---
+    let nowTick = $state(Date.now());
+
+    $effect(() => {
+        const interval = setInterval(() => (nowTick = Date.now()), 30_000);
+
+        return () => clearInterval(interval);
+    });
+
     const sinceLabel = $derived.by(() => {
+        void nowTick;
         if (!activeSession) return '';
-        const minutes = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
-        return minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
+        const minutes = Math.max(
+            0,
+            Math.floor((nowTick - new Date(activeSession.started_at).getTime()) / 60000),
+        );
+
+        return minutes < 60 ? `hace ${minutes} min` : `hace ${Math.floor(minutes / 60)} h ${minutes % 60} min`;
     });
 </script>
 
@@ -70,7 +115,7 @@
         <Card class="border-primary/40">
             <CardContent class="flex flex-col items-center gap-3 py-8 text-center">
                 <p class="text-lg font-semibold">Tienes una sesión en curso</p>
-                <p class="text-sm text-muted-foreground">Empezada hace {sinceLabel}</p>
+                <p class="text-sm tabular-nums text-muted-foreground">Empezada {sinceLabel}</p>
                 <Button size="lg" asChild>
                     {#snippet children(props)}
                         <Link {...props} href={show({ session: activeSession.id }).url}>
@@ -82,29 +127,47 @@
         </Card>
     {:else}
         <Card>
-            <CardContent class="flex flex-col gap-4 py-8 text-center">
-                <div class="flex flex-col items-center gap-3">
+            <CardContent class="flex flex-col gap-4 py-6">
+                <div class="flex flex-col items-center gap-1 text-center">
                     <p class="text-lg font-semibold">¿Listo para entrenar?</p>
-                    <p class="text-sm text-muted-foreground">Registra tus series con reps y peso en el momento.</p>
-                    <Button size="lg" onclick={() => router.post(startSession().url)}>Empezar entrenamiento</Button>
+                    <p class="text-sm text-muted-foreground">Elige tu rutina o entrena libre.</p>
                 </div>
-                {#if routines.length > 0}
-                    <div class="flex flex-col gap-2 border-t pt-4">
-                        <p class="text-xs font-medium text-muted-foreground">o lanza una rutina:</p>
-                        <div class="flex flex-wrap justify-center gap-2">
-                            {#each routines as routine (routine.id)}
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    onclick={() => router.post(startSession().url, { routine_id: routine.id })}
-                                >
-                                    {routine.name}
-                                    <span class="ml-1 text-muted-foreground">{routine.exercises}</span>
-                                </Button>
-                            {/each}
-                        </div>
+
+                <div class="flex flex-col gap-2">
+                    <p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">Rutina</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            class={cn(
+                                'rounded-full border px-3 py-1.5 text-sm font-medium transition-all active:scale-95',
+                                selectedRoutineId === null
+                                    ? 'border-primary bg-primary text-primary-foreground'
+                                    : 'bg-background text-muted-foreground hover:bg-muted',
+                            )}
+                            onclick={() => (selectedRoutineId = null)}
+                        >
+                            Libre
+                        </button>
+                        {#each routines as routine (routine.id)}
+                            <button
+                                class={cn(
+                                    'rounded-full border px-3 py-1.5 text-sm font-medium transition-all active:scale-95',
+                                    selectedRoutineId === routine.id
+                                        ? 'border-primary bg-primary text-primary-foreground'
+                                        : 'bg-background text-muted-foreground hover:bg-muted',
+                                )}
+                                onclick={() => (selectedRoutineId = routine.id)}
+                            >
+                                {routine.name}
+                                <span class="ml-1 opacity-70">{routine.exercises}</span>
+                            </button>
+                        {/each}
                     </div>
-                {/if}
+                </div>
+
+                <Button size="lg" class="h-14 gap-2 text-base font-semibold" onclick={comenzar}>
+                    <Play class="size-5 fill-current" />
+                    Comenzar{selectedRoutine ? ` · ${selectedRoutine.name}` : ''}
+                </Button>
             </CardContent>
         </Card>
     {/if}
@@ -155,3 +218,39 @@
         {/each}
     </section>
 </div>
+
+{#if countdown !== null}
+    <div class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-background">
+        <p class="text-sm font-medium tracking-wide text-muted-foreground uppercase">
+            {selectedRoutine ? selectedRoutine.name : 'Entrenamiento libre'}
+        </p>
+        {#key countdown}
+            <div
+                class="text-9xl font-black tabular-nums text-primary"
+                style="animation: countdown-pop 1s ease-out forwards"
+            >
+                {countdown}
+            </div>
+        {/key}
+        <Button variant="ghost" class="text-muted-foreground" onclick={() => (countdown = null)}>
+            Cancelar
+        </Button>
+    </div>
+{/if}
+
+<style>
+    @keyframes countdown-pop {
+        0% {
+            transform: scale(0.4);
+            opacity: 0;
+        }
+        25% {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(0.9);
+            opacity: 0.85;
+        }
+    }
+</style>
