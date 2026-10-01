@@ -124,6 +124,8 @@ class RoutineTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (InertiaPage $page) => $page
                 ->component('workout/Show')
+                ->where('routine.name', $routine->name)
+                ->has('routinePlan', 2)
                 ->where('routineExerciseIds', $routine->items()->orderBy('position')->pluck('exercise_id')->all()));
     }
 

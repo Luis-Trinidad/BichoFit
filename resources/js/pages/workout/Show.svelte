@@ -57,11 +57,15 @@
 
     let {
         session,
+        routine = null,
+        routinePlan = [],
         lastByExercise = {},
         exercises = [],
         routineExerciseIds = [],
     }: {
         session: SessionProp;
+        routine?: { id: number; name: string } | null;
+        routinePlan?: { exerciseId: number; name: string; target: string | null }[];
         lastByExercise?: Record<string, { reps: number; weightKg: number }>;
         exercises?: import('@/components/ExercisePickerDialog.svelte').ExerciseOption[];
         routineExerciseIds?: number[];
@@ -69,7 +73,28 @@
 
     const isActive = $derived(session.finishedAt === null);
 
-    // Ejercicios de la sesión en orden de primera aparición
+    // Plan de la rutina: orden y objetivo por ejercicio
+    const routineOrder = $derived(new Map(routinePlan.map((item, index) => [item.exerciseId, index])));
+    const routineTargets = $derived(new Map(routinePlan.map((item) => [item.exerciseId, item.target ?? ''])));
+
+    /** Series objetivo desde un texto tipo "3x8-12" → 3; sin patrón → null. */
+    function targetSets(exerciseId: number): number | null {
+        const target = routineTargets.get(exerciseId) ?? '';
+        const match = /^(\d+)\s*[x×]/i.exec(target.trim());
+
+        return match ? Number(match[1]) : null;
+    }
+
+    type BlockState = 'pendiente' | 'en-curso' | 'completado';
+
+    function blockState(exerciseId: number, setCount: number): BlockState {
+        if (setCount === 0) return 'pendiente';
+        const goal = targetSets(exerciseId);
+
+        return goal === null || setCount >= goal ? 'completado' : 'en-curso';
+    }
+
+    // Ejercicios de la sesión; si hay rutina, en su orden (los extra al final)
     interface ExerciseBlock {
         exerciseId: number;
         name: string;
@@ -88,7 +113,24 @@
             }
             block.sets.push(set);
         }
-        return [...map.values()];
+        const list = [...map.values()];
+        if (routinePlan.length > 0) {
+            list.sort((a, b) => (routineOrder.get(a.exerciseId) ?? 999) - (routineOrder.get(b.exerciseId) ?? 999));
+        }
+
+        return list;
+    });
+
+    // Progreso de la rutina: completados sobre el total del plan
+    const routineProgress = $derived.by(() => {
+        if (routinePlan.length === 0) return null;
+        const done = routinePlan.filter((item) => {
+            const block = blocks.find((b) => b.exerciseId === item.exerciseId);
+
+            return block ? blockState(item.exerciseId, block.sets.length) === 'completado' : false;
+        }).length;
+
+        return { done, total: routinePlan.length };
     });
 
     const totalVolume = $derived(session.sets.reduce((sum, s) => sum + s.reps * s.weightKg, 0));
@@ -99,16 +141,28 @@
     const stagedBlocks = $derived(
         stagedIds
             .filter((id) => !blocks.some((b) => b.exerciseId === id))
+            .sort((a, b) => (routineOrder.get(a) ?? 999) - (routineOrder.get(b) ?? 999))
             .map((id) => {
+                const plan = routinePlan.find((item) => item.exerciseId === id);
                 const option = exercises.find((e) => e.id === id);
                 return {
                     exerciseId: id,
-                    name: option?.name ?? '',
+                    name: plan?.name ?? option?.name ?? '',
                     muscleGroup: option?.muscle_group ?? '',
                     sets: [] as SetItem[],
                 };
             }),
     );
+
+    // Lista única de tarjetas: hechas + pendientes, en orden de rutina si la hay
+    const renderBlocks = $derived.by(() => {
+        const all = [...blocks, ...stagedBlocks];
+        if (routinePlan.length === 0) return all;
+
+        return all.sort(
+            (a, b) => (routineOrder.get(a.exerciseId) ?? 999) - (routineOrder.get(b.exerciseId) ?? 999),
+        );
+    });
 
     let pickerOpen = $state(false);
     let detailExerciseId = $state<number | null>(null);
@@ -209,18 +263,39 @@
 <AppHead title="Entrenamiento" />
 
 <div class="flex flex-col gap-4 p-4">
-    <header class="flex items-start justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold capitalize">{dateLabel}</h1>
-            <p class="text-sm text-muted-foreground">
-                {#if isActive}
-                    En curso · {elapsed} · {session.sets.length} series
-                {:else}
-                    Terminado · {session.sets.length} series
-                {/if}
-            </p>
+    <header class="flex flex-col gap-2">
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold capitalize">{dateLabel}</h1>
+                <p class="text-sm text-muted-foreground">
+                    {#if isActive}
+                        En curso · {elapsed} · {session.sets.length} series
+                    {:else}
+                        Terminado · {session.sets.length} series
+                    {/if}
+                </p>
+            </div>
+            <Badge variant="secondary" class="text-sm">{totalVolume.toLocaleString('es')} kg</Badge>
         </div>
-        <Badge variant="secondary" class="text-sm">{totalVolume.toLocaleString('es')} kg</Badge>
+
+        {#if routine && routineProgress}
+            <div class="rounded-xl border bg-muted/30 px-4 py-3">
+                <div class="flex items-center justify-between gap-2">
+                    <p class="text-sm font-semibold">{routine.name}</p>
+                    <p class="text-sm tabular-nums text-muted-foreground">
+                        {routineProgress.done}/{routineProgress.total} completados
+                    </p>
+                </div>
+                <div class="mt-2 h-2 overflow-hidden rounded-full bg-muted" role="progressbar"
+                    aria-valuemin="0" aria-valuemax={routineProgress.total} aria-valuenow={routineProgress.done}
+                >
+                    <div
+                        class="h-full rounded-full bg-primary transition-all"
+                        style={`width: ${Math.round((routineProgress.done / routineProgress.total) * 100)}%`}
+                    ></div>
+                </div>
+            </div>
+        {/if}
     </header>
 
     {#if blocks.length === 0 && stagedBlocks.length === 0}
@@ -235,8 +310,11 @@
         </Card>
     {/if}
 
-    {#each [...blocks, ...stagedBlocks] as block (block.exerciseId)}
-        <Card>
+    {#each renderBlocks as block (block.exerciseId)}
+        {@const estado = blockState(block.exerciseId, block.sets.length)}
+        {@const objetivo = routineTargets.get(block.exerciseId) ?? ''}
+        {@const seriesMeta = objetivo ? `${block.sets.length} / ${targetSets(block.exerciseId) ?? '·'} series` : `${block.sets.length} series`}
+        <Card class={estado === 'pendiente' ? 'border-dashed' : ''}>
             <CardHeader class="pb-2">
                 <CardTitle class="flex items-center justify-between gap-2 text-base">
                     <button
@@ -246,9 +324,17 @@
                     >
                         {block.name} <span class="text-xs text-muted-foreground">ⓘ</span>
                     </button>
-                    <Badge variant="outline" class="shrink-0">{block.sets.length} series</Badge>
+                    {#if estado === 'completado'}
+                        <Badge class="shrink-0 gap-1 bg-emerald-600 text-white hover:bg-emerald-600">✓ {seriesMeta}</Badge>
+                    {:else if estado === 'pendiente'}
+                        <Badge variant="outline" class="shrink-0">Pendiente</Badge>
+                    {:else}
+                        <Badge variant="outline" class="shrink-0">{seriesMeta}</Badge>
+                    {/if}
                 </CardTitle>
-                <p class="text-xs text-muted-foreground">{block.muscleGroup}</p>
+                <p class="text-xs text-muted-foreground">
+                    {block.muscleGroup}{objetivo ? ` · objetivo ${objetivo}` : ''}
+                </p>
             </CardHeader>
             <CardContent class="flex flex-col gap-2">
                 {#each block.sets as set, index (set.id)}

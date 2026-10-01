@@ -39,7 +39,13 @@ class SessionController extends Controller
 
         // Ejercicios de la rutina origen (en orden) para preparar la sesión
         $routineExerciseIds = collect();
+        $routinePlan = collect();
         if ($session->routine) {
+            $routinePlan = $session->routine->items->map(fn ($item) => [
+                'exerciseId' => $item->exercise_id,
+                'name' => $item->exercise->name,
+                'target' => $item->target,
+            ])->values();
             $routineExerciseIds = $session->routine->items
                 ->whereNotIn('exercise_id', $session->sets->pluck('exercise_id'))
                 ->pluck('exercise_id')
@@ -76,6 +82,11 @@ class SessionController extends Controller
                     'weightKg' => (float) $set->weight_kg,
                 ])->all(),
             ],
+            'routine' => $session->routine ? [
+                'id' => $session->routine->id,
+                'name' => $session->routine->name,
+            ] : null,
+            'routinePlan' => $routinePlan->all(),
             'lastByExercise' => $lastByExercise->all(),
             'exercises' => Exercise::forUser($request->user()->id)
                 ->orderBy('name')
