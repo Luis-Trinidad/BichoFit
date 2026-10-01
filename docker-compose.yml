@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bichofit-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bichofit
+      POSTGRES_USER: bichofit
+      POSTGRES_PASSWORD: secret
+    ports:
+      # 5433 en el host para no chocar con un Postgres local existente
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bichofit -d bichofit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:
