@@ -30,7 +30,8 @@ class SessionController extends Controller
         if ($routineId !== null) {
             $routine = $request->user()->routines()->findOrFail($routineId);
             // Día pedido, o el de hoy si tiene ejercicios, o el primer día con ejercicios
-            $daysWithItems = $routine->items()->distinct()->pluck('day_of_week');
+            // reorder(): la relación ordena por position y DISTINCT+ORDER BY rompe en Postgres
+            $daysWithItems = $routine->items()->reorder()->distinct()->pluck('day_of_week');
             $today = now()->isoWeekday();
             $routineDay = $validated['routine_day'] ?? null;
 
