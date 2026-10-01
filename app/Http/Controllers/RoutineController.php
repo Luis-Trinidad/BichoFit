@@ -58,10 +58,11 @@ class RoutineController extends Controller
             ],
             'exercises' => Exercise::forUser($request->user()->id)
                 ->orderBy('name')
-                ->get(['id', 'name', 'muscle_group', 'image_path'])
+                ->get(['id', 'name', 'name_en', 'muscle_group', 'image_path'])
                 ->map(fn (Exercise $exercise) => [
                     'id' => $exercise->id,
                     'name' => $exercise->name,
+                    'nameEn' => $exercise->name_en,
                     'muscle_group' => $exercise->muscle_group,
                     'imageUrl' => $exercise->imageUrl(),
                 ])->all(),

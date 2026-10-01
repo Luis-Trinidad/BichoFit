@@ -15,13 +15,14 @@ class ExerciseController extends Controller
         $exercises = Exercise::forUser($request->user()->id)
             ->orderBy('muscle_group')
             ->orderBy('name')
-            ->get(['id', 'name', 'muscle_group', 'user_id', 'equipment', 'image_path', 'gif_path']);
+            ->get(['id', 'name', 'name_en', 'muscle_group', 'user_id', 'equipment', 'image_path', 'gif_path']);
 
         $grouped = $exercises
             ->groupBy('muscle_group')
             ->map(fn ($group) => $group->map(fn (Exercise $exercise) => [
                 'id' => $exercise->id,
                 'name' => $exercise->name,
+                'nameEn' => $exercise->name_en,
                 'isCustom' => $exercise->user_id !== null,
                 'equipment' => $exercise->equipment,
                 'imageUrl' => $exercise->imageUrl(),

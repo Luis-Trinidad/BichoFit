@@ -7,6 +7,7 @@
     export interface ExerciseOption {
         id: number;
         name: string;
+        nameEn?: string | null;
         muscle_group: string;
         imageUrl?: string | null;
     }
@@ -30,7 +31,11 @@
     const results = $derived.by(() => {
         const term = search.trim().toLowerCase();
         const filtered = term
-            ? exercises.filter((e) => e.name.toLowerCase().includes(term))
+            ? exercises.filter(
+                  (e) =>
+                      e.name.toLowerCase().includes(term) ||
+                      (e.nameEn ?? '').toLowerCase().includes(term),
+              )
             : exercises;
         return {
             items: filtered.slice(0, MAX_RESULTS),

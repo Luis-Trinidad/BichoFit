@@ -41,6 +41,7 @@
     interface ExerciseItem {
         id: number;
         name: string;
+        nameEn?: string | null;
         isCustom: boolean;
         equipment?: string | null;
         imageUrl?: string | null;
@@ -75,7 +76,11 @@
         if (!term) return null;
         const matches = Object.values(groups)
             .flat()
-            .filter((e) => e.name.toLowerCase().includes(term));
+            .filter(
+                (e) =>
+                    e.name.toLowerCase().includes(term) ||
+                    (e.nameEn ?? '').toLowerCase().includes(term),
+            );
         return { items: matches.slice(0, MAX_SEARCH_RESULTS), total: matches.length };
     });
 

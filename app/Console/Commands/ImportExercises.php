@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Exercise;
+use App\Support\ExerciseNameTranslator;
 use Illuminate\Console\Command;
 
 /**
@@ -79,6 +80,8 @@ class ImportExercises extends Command
         $updated = 0;
         $mediaCopied = 0;
         $skippedMedia = 0;
+        $translator = new ExerciseNameTranslator;
+        $translated = 0;
 
         foreach ($records as $index => $record) {
             $sourceId = (string) $record['id'];
@@ -86,6 +89,10 @@ class ImportExercises extends Command
             $target = $record['target'] ?? null;
             $instructions = $record['instruction_steps']['es'] ?? null;
             $description = $record['instructions']['es'] ?? null;
+            [$nameEs, $nameEn] = $translator->translate((string) $record['name']);
+            if ($nameEs !== $nameEn) {
+                $translated++;
+            }
 
             $imagePath = $this->copyMedia(
                 $dataset, $record['image'] ?? null, $jpgDir, $sourceId.'.jpg', $mediaCopied, $skippedMedia
@@ -97,7 +104,8 @@ class ImportExercises extends Command
             $exercise = Exercise::updateOrCreate(
                 ['source_id' => $sourceId],
                 [
-                    'name' => $record['name'],
+                    'name' => $nameEs,
+                    'name_en' => $nameEn,
                     'muscle_group' => $this->mapGroup($category, $target),
                     'user_id' => null,
                     'description_es' => $description,
@@ -119,8 +127,8 @@ class ImportExercises extends Command
         }
 
         $this->info(sprintf(
-            'Listo: %d creados, %d actualizados, %d medios copiados (%d ya existían).',
-            $created, $updated, $mediaCopied, $skippedMedia
+            'Listo: %d creados, %d actualizados, %d traducidos al español, %d medios copiados (%d ya existían).',
+            $created, $updated, $translated, $mediaCopied, $skippedMedia
         ));
 
         return self::SUCCESS;

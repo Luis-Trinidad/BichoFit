@@ -29,7 +29,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 #[Fillable([
-    'name', 'muscle_group', 'user_id', 'source_id', 'description_es',
+    'name', 'name_en', 'muscle_group', 'user_id', 'source_id', 'description_es',
     'instructions_es', 'equipment', 'target', 'secondary_muscles',
     'image_path', 'gif_path', 'attribution',
 ])]
