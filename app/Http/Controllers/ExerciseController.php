@@ -25,7 +25,7 @@ class ExerciseController extends Controller
                 'nameEn' => $exercise->name_en,
                 'isCustom' => $exercise->user_id !== null,
                 'equipment' => $exercise->equipment,
-                'imageUrl' => $exercise->imageUrl(),
+                'imageUrl' => $exercise->resolvedImageUrl(),
                 'hasGuide' => $exercise->gif_path !== null,
             ])->all());
 
@@ -46,8 +46,8 @@ class ExerciseController extends Controller
             'secondaryMuscles' => $exercise->secondary_muscles,
             'description' => $exercise->description_es,
             'steps' => $exercise->instructions_es,
-            'imageUrl' => $exercise->imageUrl(),
-            'gifUrl' => $exercise->gifUrl(),
+            'imageUrl' => $exercise->resolvedImageUrl(),
+            'gifUrl' => $exercise->resolvedGifUrl(),
             'attribution' => $exercise->attribution,
         ]);
     }

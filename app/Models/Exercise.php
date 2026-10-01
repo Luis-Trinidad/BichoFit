@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -80,5 +81,45 @@ class Exercise extends Model
     public function gifUrl(): ?string
     {
         return $this->gif_path ? '/storage/'.$this->gif_path : null;
+    }
+
+    /**
+     * Media del dataset indexada por nombre: los ejercicios curados sin
+     * guía heredan la de su equivalente del dataset (nombres idénticos
+     * tras la traducción).
+     *
+     * @return Collection<string, Exercise>
+     */
+    public static function datasetMediaByName(): Collection
+    {
+        return once(fn () => static::query()
+            ->whereNotNull('source_id')
+            ->whereNotNull('gif_path')
+            ->get(['id', 'name', 'image_path', 'gif_path'])
+            ->keyBy(fn (self $exercise) => mb_strtolower($exercise->name)));
+    }
+
+    /** GIF propio o el del gemelo del dataset con el mismo nombre. */
+    public function resolvedGifUrl(): ?string
+    {
+        if ($this->gif_path !== null) {
+            return $this->gifUrl();
+        }
+
+        $sibling = static::datasetMediaByName()->get(mb_strtolower($this->name));
+
+        return $sibling?->gifUrl();
+    }
+
+    /** Miniatura propia o la del gemelo del dataset con el mismo nombre. */
+    public function resolvedImageUrl(): ?string
+    {
+        if ($this->image_path !== null) {
+            return $this->imageUrl();
+        }
+
+        $sibling = static::datasetMediaByName()->get(mb_strtolower($this->name));
+
+        return $sibling?->imageUrl();
     }
 }

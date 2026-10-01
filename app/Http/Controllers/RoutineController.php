@@ -52,7 +52,7 @@ class RoutineController extends Controller
                     'name' => $item->exercise->name,
                     'muscleGroup' => $item->exercise->muscle_group,
                     'equipment' => $item->exercise->equipment,
-                    'imageUrl' => $item->exercise->imageUrl(),
+                    'imageUrl' => $item->exercise->resolvedImageUrl(),
                     'target' => $item->target,
                 ])->all(),
             ],
@@ -64,7 +64,7 @@ class RoutineController extends Controller
                     'name' => $exercise->name,
                     'nameEn' => $exercise->name_en,
                     'muscle_group' => $exercise->muscle_group,
-                    'imageUrl' => $exercise->imageUrl(),
+                    'imageUrl' => $exercise->resolvedImageUrl(),
                 ])->all(),
         ]);
     }

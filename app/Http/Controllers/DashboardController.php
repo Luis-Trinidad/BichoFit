@@ -55,7 +55,7 @@ class DashboardController extends Controller
                     'items' => $routine->items->map(fn ($item) => [
                         'name' => $item->exercise->name,
                         'target' => $item->target,
-                        'imageUrl' => $item->exercise->imageUrl(),
+                        'imageUrl' => $item->exercise->resolvedImageUrl(),
                     ])->all(),
                 ])->all(),
         ]);

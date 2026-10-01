@@ -36,6 +36,8 @@
         exerciseId: number;
         exerciseName: string;
         muscleGroup: string;
+        gifUrl?: string | null;
+        imageUrl?: string | null;
         reps: number;
         weightKg: number;
     }
@@ -99,6 +101,8 @@
         exerciseId: number;
         name: string;
         muscleGroup: string;
+        gifUrl?: string | null;
+        imageUrl?: string | null;
         sets: SetItem[];
     }
 
@@ -108,7 +112,14 @@
         for (const set of session.sets) {
             let block = map.get(set.exerciseId);
             if (!block) {
-                block = { exerciseId: set.exerciseId, name: set.exerciseName, muscleGroup: set.muscleGroup, sets: [] };
+                block = {
+                    exerciseId: set.exerciseId,
+                    name: set.exerciseName,
+                    muscleGroup: set.muscleGroup,
+                    gifUrl: set.gifUrl,
+                    imageUrl: set.imageUrl,
+                    sets: [],
+                };
                 map.set(set.exerciseId, block);
             }
             block.sets.push(set);
@@ -149,6 +160,8 @@
                     exerciseId: id,
                     name: plan?.name ?? option?.name ?? '',
                     muscleGroup: option?.muscle_group ?? '',
+                    gifUrl: option?.gifUrl ?? null,
+                    imageUrl: option?.imageUrl ?? null,
                     sets: [] as SetItem[],
                 };
             }),
@@ -323,7 +336,13 @@
         {@const seriesMeta = objetivo ? `${block.sets.length} / ${targetSets(block.exerciseId) ?? '·'} series` : `${block.sets.length} series`}
         <Card class={estado === 'pendiente' ? 'border-dashed' : ''}>
             <CardHeader class="pb-2">
-                <CardTitle class="flex items-center justify-between gap-2 text-base">
+                <CardTitle class="flex min-w-0 items-center justify-between gap-2 text-base">
+                    <img
+                        src={block.gifUrl ?? block.imageUrl ?? undefined}
+                        alt=""
+                        loading="lazy"
+                        class="size-11 shrink-0 rounded-md bg-muted object-contain"
+                    />
                     <button
                         class="min-w-0 flex-1 truncate text-left"
                         title="Ver guía"

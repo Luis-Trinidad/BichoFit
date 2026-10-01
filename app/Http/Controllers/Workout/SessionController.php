@@ -78,6 +78,8 @@ class SessionController extends Controller
                     'exerciseId' => $set->exercise_id,
                     'exerciseName' => $set->exercise->name,
                     'muscleGroup' => $set->exercise->muscle_group,
+                    'gifUrl' => $set->exercise->resolvedGifUrl(),
+                    'imageUrl' => $set->exercise->resolvedImageUrl(),
                     'reps' => $set->reps,
                     'weightKg' => (float) $set->weight_kg,
                 ])->all(),
@@ -96,7 +98,8 @@ class SessionController extends Controller
                     'name' => $exercise->name,
                     'nameEn' => $exercise->name_en,
                     'muscle_group' => $exercise->muscle_group,
-                    'imageUrl' => $exercise->imageUrl(),
+                    'imageUrl' => $exercise->resolvedImageUrl(),
+                    'gifUrl' => $exercise->resolvedGifUrl(),
                 ])->all(),
             'routineExerciseIds' => $routineExerciseIds->all(),
         ]);
