@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\WorkoutSessionFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,11 +22,20 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['date', 'notes'])]
+#[Fillable(['date', 'routine_id', 'notes', 'started_at', 'finished_at'])]
 class WorkoutSession extends Model
 {
     /** @use HasFactory<WorkoutSessionFactory> */
     use HasFactory;
+
+    protected function casts(): array
+    {
+        return [
+            'date' => 'date',
+            'started_at' => 'datetime',
+            'finished_at' => 'datetime',
+        ];
+    }
 
     /** Sesión en curso: empezada y nunca terminada. */
     public function scopeActive(Builder $query): Builder

@@ -1,0 +1,375 @@
+<script module lang="ts">
+    import { dashboard } from '@/routes';
+
+    export const layout = {
+        breadcrumbs: [
+            {
+                title: 'Entrenamiento',
+                href: dashboard(),
+            },
+        ],
+    };
+</script>
+
+<script lang="ts">
+    import { Link, router } from '@inertiajs/svelte';
+    import { toast } from 'svelte-sonner';
+    import AppHead from '@/components/AppHead.svelte';
+    import { Badge } from '@/components/ui/badge';
+    import { Button } from '@/components/ui/button';
+    import {
+        Card,
+        CardContent,
+        CardHeader,
+        CardTitle,
+    } from '@/components/ui/card';
+    import {
+        Dialog,
+        DialogContent,
+        DialogDescription,
+        DialogTitle,
+    } from '@/components/ui/dialog';
+    import { Input } from '@/components/ui/input';
+    import { Label } from '@/components/ui/label';
+    import { destroy as destroySession, finish } from '@/routes/workout-sessions';
+    import { destroy as destroySet, store as storeSet, update as updateSet } from '@/routes/workout-sets';
+
+    interface SetItem {
+        id: number;
+        exerciseId: number;
+        exerciseName: string;
+        muscleGroup: string;
+        reps: number;
+        weightKg: number;
+    }
+
+    interface SessionProp {
+        id: number;
+        date: string;
+        startedAt: string;
+        finishedAt: string | null;
+        notes: string | null;
+        sets: SetItem[];
+    }
+
+    interface ExerciseOption {
+        id: number;
+        name: string;
+        muscle_group: string;
+    }
+
+    let {
+        session,
+        lastByExercise = {},
+        exercises = [],
+    }: {
+        session: SessionProp;
+        lastByExercise?: Record<string, { reps: number; weightKg: number }>;
+        exercises?: ExerciseOption[];
+    } = $props();
+
+    const isActive = $derived(session.finishedAt === null);
+
+    // Ejercicios de la sesión en orden de primera aparición
+    interface ExerciseBlock {
+        exerciseId: number;
+        name: string;
+        muscleGroup: string;
+        sets: SetItem[];
+    }
+
+    const blocks = $derived.by(() => {
+        const map = new Map<number, ExerciseBlock>();
+
+        for (const set of session.sets) {
+            let block = map.get(set.exerciseId);
+            if (!block) {
+                block = { exerciseId: set.exerciseId, name: set.exerciseName, muscleGroup: set.muscleGroup, sets: [] };
+                map.set(set.exerciseId, block);
+            }
+            block.sets.push(set);
+        }
+        return [...map.values()];
+    });
+
+    const totalVolume = $derived(session.sets.reduce((sum, s) => sum + s.reps * s.weightKg, 0));
+
+    // Ejercicios seleccionados del catálogo sin series todavía (locales hasta registrar)
+    let stagedIds = $state<number[]>([]);
+    const stagedBlocks = $derived(
+        stagedIds
+            .filter((id) => !blocks.some((b) => b.exerciseId === id))
+            .map((id) => {
+                const option = exercises.find((e) => e.id === id);
+                return {
+                    exerciseId: id,
+                    name: option?.name ?? '',
+                    muscleGroup: option?.muscle_group ?? '',
+                    sets: [] as SetItem[],
+                };
+            }),
+    );
+
+    let pickerOpen = $state(false);
+    let search = $state('');
+
+    const filteredExercises = $derived(
+        exercises.filter((e) => e.name.toLowerCase().includes(search.trim().toLowerCase())),
+    );
+
+    // Formulario rápido por ejercicio: reps/peso pre-llenados de la última serie
+    let draft = $state<Record<number, { reps: string; weight: string }>>({});
+
+    function prefill(exerciseId: number): { reps: string; weight: string } {
+        const inSession = session.sets.filter((s) => s.exerciseId === exerciseId).at(-1);
+        const previous = lastByExercise[String(exerciseId)];
+        const source = inSession ?? previous;
+        return { reps: source ? String(source.reps) : '', weight: source ? String(source.weightKg) : '' };
+    }
+
+    function addSet(exerciseId: number) {
+        const values = draft[exerciseId] ?? prefill(exerciseId);
+        const reps = Number(values.reps);
+        const weight = Number(values.weight);
+
+        if (!reps || Number.isNaN(weight)) {
+            toast.error('Registra repeticiones y peso (0 si es peso corporal).');
+            return;
+        }
+
+        router.post(
+            storeSet({ session: session.id }).url,
+            { exercise_id: exerciseId, reps, weight_kg: weight },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    draft[exerciseId] = prefill(exerciseId);
+                    stagedIds = stagedIds.filter((id) => id !== exerciseId);
+                },
+            },
+        );
+    }
+
+    let editingSetId = $state<number | null>(null);
+    let editDraft = $state({ reps: '', weight: '' });
+
+    function startEdit(set: SetItem) {
+        editingSetId = set.id;
+        editDraft = { reps: String(set.reps), weight: String(set.weightKg) };
+    }
+
+    function saveEdit(setId: number) {
+        router.patch(
+            updateSet({ set: setId }).url,
+            { reps: Number(editDraft.reps), weight_kg: Number(editDraft.weight) },
+            { preserveScroll: true, onSuccess: () => (editingSetId = null) },
+        );
+    }
+
+    function removeSet(setId: number) {
+        router.delete(destroySet({ set: setId }).url, { preserveScroll: true });
+    }
+
+    function finishWorkout() {
+        router.post(finish({ session: session.id }).url);
+    }
+
+    function deleteSession() {
+        if (confirm('¿Borrar el entrenamiento completo? Esta acción no se puede deshacer.')) {
+            router.delete(destroySession({ session: session.id }).url);
+        }
+    }
+
+    // Cronómetro de la sesión en curso
+    let elapsed = $state('');
+
+    $effect(() => {
+        if (!isActive) return;
+        const started = new Date(session.startedAt).getTime();
+        const tick = () => {
+            elapsed = formatElapsed(Date.now() - started);
+        };
+        tick();
+        const interval = setInterval(tick, 1000);
+        return () => clearInterval(interval);
+    });
+
+    function formatElapsed(ms: number): string {
+        const totalMinutes = Math.floor(ms / 60000);
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return hours > 0 ? `${hours} h ${minutes} min` : `${minutes} min`;
+    }
+
+    const dateLabel = $derived(
+        new Intl.DateTimeFormat('es', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+        }).format(new Date(session.date + 'T12:00:00')),
+    );
+</script>
+
+<AppHead title="Entrenamiento" />
+
+<div class="flex flex-col gap-4 p-4">
+    <header class="flex items-start justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold capitalize">{dateLabel}</h1>
+            <p class="text-sm text-muted-foreground">
+                {#if isActive}
+                    En curso · {elapsed} · {session.sets.length} series
+                {:else}
+                    Terminado · {session.sets.length} series
+                {/if}
+            </p>
+        </div>
+        <Badge variant="secondary" class="text-sm">{totalVolume.toLocaleString('es')} kg</Badge>
+    </header>
+
+    {#if blocks.length === 0 && stagedBlocks.length === 0}
+        <Card>
+            <CardContent class="flex flex-col items-center gap-3 py-10 text-center">
+                <p class="text-lg font-medium">Agrega tu primer ejercicio</p>
+                <p class="text-sm text-muted-foreground">Busca en el catálogo y registra tus series de reps × peso.</p>
+                {#if isActive}
+                    <Button onclick={() => (pickerOpen = true)}>Añadir ejercicio</Button>
+                {/if}
+            </CardContent>
+        </Card>
+    {/if}
+
+    {#each [...blocks, ...stagedBlocks] as block (block.exerciseId)}
+        <Card>
+            <CardHeader class="pb-2">
+                <CardTitle class="flex items-center justify-between gap-2 text-base">
+                    <span>{block.name}</span>
+                    <Badge variant="outline" class="shrink-0">{block.sets.length} series</Badge>
+                </CardTitle>
+                <p class="text-xs text-muted-foreground">{block.muscleGroup}</p>
+            </CardHeader>
+            <CardContent class="flex flex-col gap-2">
+                {#each block.sets as set, index (set.id)}
+                    {#if editingSetId === set.id}
+                        <div class="flex items-center gap-2">
+                            <Label class="w-4 text-sm text-muted-foreground">{index + 1}.</Label>
+                            <Input
+                                type="number"
+                                inputmode="numeric"
+                                class="h-9 w-20"
+                                bind:value={editDraft.reps}
+                                aria-label="Repeticiones"
+                            />
+                            <span class="text-sm text-muted-foreground">×</span>
+                            <Input
+                                type="number"
+                                inputmode="decimal"
+                                step="0.5"
+                                class="h-9 w-24"
+                                bind:value={editDraft.weight}
+                                aria-label="Peso en kg"
+                            />
+                            <span class="text-sm text-muted-foreground">kg</span>
+                            <Button size="sm" class="ml-auto" onclick={() => saveEdit(set.id)}>Guardar</Button>
+                        </div>
+                    {:else}
+                        <div class="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/60">
+                            <span class="w-4 text-sm text-muted-foreground">{index + 1}.</span>
+                            <button
+                                class="flex-1 text-left text-sm font-medium"
+                                onclick={() => isActive && startEdit(set)}
+                            >
+                                {set.reps} reps × {set.weightKg} kg
+                            </button>
+                            {#if isActive}
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    class="h-7 px-2 text-muted-foreground"
+                                    aria-label="Borrar serie"
+                                    onclick={() => removeSet(set.id)}
+                                >
+                                    ✕
+                                </Button>
+                            {/if}
+                        </div>
+                    {/if}
+                {/each}
+
+                {#if isActive}
+                    {@const values = draft[block.exerciseId] ?? prefill(block.exerciseId)}
+                    <form
+                        class="mt-2 flex items-center gap-2"
+                        onsubmit={(event) => {
+                            event.preventDefault();
+                            draft[block.exerciseId] = values;
+                            addSet(block.exerciseId);
+                        }}
+                    >
+                        <Input
+                            type="number"
+                            inputmode="numeric"
+                            placeholder="reps"
+                            class="h-9 w-20"
+                            bind:value={values.reps}
+                            aria-label="Repeticiones"
+                            required
+                        />
+                        <span class="text-sm text-muted-foreground">×</span>
+                        <Input
+                            type="number"
+                            inputmode="decimal"
+                            step="0.5"
+                            placeholder="kg"
+                            class="h-9 w-24"
+                            bind:value={values.weight}
+                            aria-label="Peso en kg"
+                            required
+                        />
+                        <Button size="sm" type="submit" class="ml-auto">Serie +</Button>
+                    </form>
+                {/if}
+            </CardContent>
+        </Card>
+    {/each}
+
+    {#if isActive}
+        <div class="flex flex-col gap-2">
+            <Button variant="outline" onclick={() => (pickerOpen = true)}>Añadir ejercicio</Button>
+            <Button size="lg" onclick={finishWorkout}>Terminar entrenamiento</Button>
+            <Button variant="ghost" class="text-muted-foreground" onclick={deleteSession}>Borrar sesión</Button>
+        </div>
+    {:else}
+        <Button variant="ghost" class="text-muted-foreground" onclick={deleteSession}>Borrar sesión</Button>
+    {/if}
+</div>
+
+<Dialog bind:open={pickerOpen}>
+    <DialogContent class="max-h-[80vh] overflow-y-auto">
+        <div class="flex flex-col gap-1.5">
+            <DialogTitle>Añadir ejercicio</DialogTitle>
+            <DialogDescription>Busca en el catálogo (global + tus ejercicios personalizados).</DialogDescription>
+        </div>
+        <Input type="search" placeholder="Buscar ejercicio…" bind:value={search} />
+        <div class="flex flex-col divide-y">
+            {#each filteredExercises as option (option.id)}
+                <button
+                    class="flex items-center justify-between px-2 py-3 text-left hover:bg-muted/60"
+                    onclick={() => {
+                        stagedIds = [...new Set([...stagedIds, option.id])];
+                        pickerOpen = false;
+                        search = '';
+                    }}
+                >
+                    <span class="text-sm font-medium">{option.name}</span>
+                    <Badge variant="outline" class="text-xs">{option.muscle_group}</Badge>
+                </button>
+            {:else}
+                <p class="px-2 py-6 text-center text-sm text-muted-foreground">
+                    Sin resultados.
+                    <Link href="/exercises" class="underline">Crear ejercicio</Link>
+                </p>
+            {/each}
+        </div>
+    </DialogContent>
+</Dialog>

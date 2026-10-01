@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -43,6 +44,12 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function workoutSessions(): HasMany
     {
         return $this->hasMany(WorkoutSession::class);
+    }
+
+    /** Todas las series del usuario a través de sus sesiones. */
+    public function workoutSets(): HasManyThrough
+    {
+        return $this->hasManyThrough(WorkoutSet::class, WorkoutSession::class, 'user_id', 'session_id');
     }
 
     /**

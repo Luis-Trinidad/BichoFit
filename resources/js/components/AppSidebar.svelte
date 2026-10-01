@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { Link } from '@inertiajs/svelte';
-    import BookOpen from '@lucide/svelte/icons/book-open';
-    import FolderGit2 from '@lucide/svelte/icons/folder-git-2';
-    import LayoutGrid from '@lucide/svelte/icons/layout-grid';
+    import { Link, router } from '@inertiajs/svelte';
+    import Dumbbell from '@lucide/svelte/icons/dumbbell';
+    import History from '@lucide/svelte/icons/history';
+    import Tags from '@lucide/svelte/icons/tags';
     import type { Snippet } from 'svelte';
     import AppLogo from '@/components/AppLogo.svelte';
     import NavFooter from '@/components/NavFooter.svelte';
@@ -19,7 +19,10 @@
     } from '@/components/ui/sidebar';
     import { toUrl } from '@/lib/utils';
     import { dashboard } from '@/routes';
+    import { index as exercisesIndex } from '@/routes/exercises';
+    import { index as historyIndex } from '@/routes/history';
     import type { NavItem } from '@/types';
+    import { useSidebar } from '@/components/ui/sidebar';
 
     let {
         children,
@@ -27,26 +30,32 @@
         children?: Snippet;
     } = $props();
 
+    // En móvil el menú es un overlay: cerrarlo al navegar, como en una app nativa
+    const { setOpenMobile } = useSidebar();
+
+    $effect(() => {
+        return router.on('navigate', () => setOpenMobile(false));
+    });
+
     const mainNavItems: NavItem[] = [
         {
-            title: 'Dashboard',
+            title: 'Hoy',
             href: dashboard(),
-            icon: LayoutGrid,
+            icon: Dumbbell,
+        },
+        {
+            title: 'Historial',
+            href: historyIndex(),
+            icon: History,
+        },
+        {
+            title: 'Ejercicios',
+            href: exercisesIndex(),
+            icon: Tags,
         },
     ];
 
-    const footerNavItems: NavItem[] = [
-        {
-            title: 'Repository',
-            href: 'https://github.com/laravel/svelte-starter-kit',
-            icon: FolderGit2,
-        },
-        {
-            title: 'Documentation',
-            href: 'https://laravel.com/docs/starter-kits#svelte',
-            icon: BookOpen,
-        },
-    ];
+    const footerNavItems: NavItem[] = [];
 </script>
 
 <Sidebar collapsible="icon" variant="inset">

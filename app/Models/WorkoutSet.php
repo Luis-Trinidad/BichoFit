@@ -18,7 +18,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['reps', 'weight_kg'])]
+#[Fillable(['exercise_id', 'reps', 'weight_kg'])]
 class WorkoutSet extends Model
 {
     /** @use HasFactory<WorkoutSetFactory> */
