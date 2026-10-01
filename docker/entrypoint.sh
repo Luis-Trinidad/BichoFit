@@ -4,24 +4,23 @@ set -e
 cd /app
 
 # Si la BD llega como URL única (postgres://usuario:clave@host:puerto/bd),
-# descomponerla a las variables DB_* que Laravel entiende.
+# descomponerla a las variables DB_* que Laravel entiende — incluyendo
+# DB_CONNECTION para que no caiga al default sqlite.
 if [ -n "$DB_URL" ]; then
-    PHP_BIN=$(command -v php)
-    eval "$(
-        $PHP_BIN -r '
+    eval "$(php -r '
         $u = parse_url(getenv("DB_URL"));
         if (!$u) exit(1);
-        $q = [];
-        if (isset($u["query"])) parse_str($u["query"], $q);
-        printf("export DB_HOST=%s DB_PORT=%d DB_DATABASE=%s DB_USERNAME=%s DB_PASSWORD=%s\n",
+        $scheme = $u["scheme"] ?? "pgsql";
+        if ($scheme === "postgres" || $scheme === "postgresql") $scheme = "pgsql";
+        printf("export DB_HOST=%s DB_PORT=%d DB_DATABASE=%s DB_USERNAME=%s DB_PASSWORD=%s DB_CONNECTION=%s\n",
             escapeshellarg($u["host"] ?? "127.0.0.1"),
             $u["port"] ?? 5432,
             escapeshellarg(ltrim($u["path"] ?? "/bichofit", "/")),
             escapeshellarg($u["user"] ?? "bichofit"),
-            escapeshellarg($u["pass"] ?? "")
+            escapeshellarg($u["pass"] ?? ""),
+            escapeshellarg($scheme)
         );
-        '
-    )"
+    ')"
 fi
 
 # El volumen de storage puede venir vacío: garantizar la estructura que Laravel espera
