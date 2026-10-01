@@ -24,7 +24,9 @@ return new class extends Migration
             $table->string('target')->nullable(); // objetivo libre, ej. "3x8-12"
             $table->timestamps();
 
-            $table->unique(['routine_id', 'position']);
+            // Sin unique: el swap de posiciones lo viola transitoriamente;
+            // el orden 1..n lo mantiene la lógica de recompactación.
+            $table->index(['routine_id', 'position']);
             $table->index(['routine_id', 'exercise_id']);
         });
 

@@ -12,9 +12,11 @@
 </script>
 
 <script lang="ts">
-    import { Link, router } from '@inertiajs/svelte';
+    import { router } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
     import AppHead from '@/components/AppHead.svelte';
+    import ExerciseDetailDialog from '@/components/ExerciseDetailDialog.svelte';
+    import ExercisePickerDialog from '@/components/ExercisePickerDialog.svelte';
     import { Badge } from '@/components/ui/badge';
     import { Button } from '@/components/ui/button';
     import {
@@ -23,12 +25,6 @@
         CardHeader,
         CardTitle,
     } from '@/components/ui/card';
-    import {
-        Dialog,
-        DialogContent,
-        DialogDescription,
-        DialogTitle,
-    } from '@/components/ui/dialog';
     import { Input } from '@/components/ui/input';
     import { Label } from '@/components/ui/label';
     import { destroy as destroySession, finish } from '@/routes/workout-sessions';
@@ -62,10 +58,12 @@
         session,
         lastByExercise = {},
         exercises = [],
+        routineExerciseIds = [],
     }: {
         session: SessionProp;
         lastByExercise?: Record<string, { reps: number; weightKg: number }>;
-        exercises?: ExerciseOption[];
+        exercises?: import('@/components/ExercisePickerDialog.svelte').ExerciseOption[];
+        routineExerciseIds?: number[];
     } = $props();
 
     const isActive = $derived(session.finishedAt === null);
@@ -94,8 +92,9 @@
 
     const totalVolume = $derived(session.sets.reduce((sum, s) => sum + s.reps * s.weightKg, 0));
 
-    // Ejercicios seleccionados del catálogo sin series todavía (locales hasta registrar)
-    let stagedIds = $state<number[]>([]);
+    // Ejercicios seleccionados sin series todavía; al iniciar desde una rutina
+    // se preparan los de la rutina (en orden) para registrar en el momento
+    let stagedIds = $state<number[]>([...routineExerciseIds]);
     const stagedBlocks = $derived(
         stagedIds
             .filter((id) => !blocks.some((b) => b.exerciseId === id))
@@ -111,11 +110,7 @@
     );
 
     let pickerOpen = $state(false);
-    let search = $state('');
-
-    const filteredExercises = $derived(
-        exercises.filter((e) => e.name.toLowerCase().includes(search.trim().toLowerCase())),
-    );
+    let detailExerciseId = $state<number | null>(null);
 
     // Formulario rápido por ejercicio: reps/peso pre-llenados de la última serie
     let draft = $state<Record<number, { reps: string; weight: string }>>({});
@@ -243,7 +238,13 @@
         <Card>
             <CardHeader class="pb-2">
                 <CardTitle class="flex items-center justify-between gap-2 text-base">
-                    <span>{block.name}</span>
+                    <button
+                        class="min-w-0 flex-1 truncate text-left"
+                        title="Ver guía"
+                        onclick={() => (detailExerciseId = block.exerciseId)}
+                    >
+                        {block.name} <span class="text-xs text-muted-foreground">ⓘ</span>
+                    </button>
                     <Badge variant="outline" class="shrink-0">{block.sets.length} series</Badge>
                 </CardTitle>
                 <p class="text-xs text-muted-foreground">{block.muscleGroup}</p>
@@ -344,32 +345,10 @@
     {/if}
 </div>
 
-<Dialog bind:open={pickerOpen}>
-    <DialogContent class="max-h-[80vh] overflow-y-auto">
-        <div class="flex flex-col gap-1.5">
-            <DialogTitle>Añadir ejercicio</DialogTitle>
-            <DialogDescription>Busca en el catálogo (global + tus ejercicios personalizados).</DialogDescription>
-        </div>
-        <Input type="search" placeholder="Buscar ejercicio…" bind:value={search} />
-        <div class="flex flex-col divide-y">
-            {#each filteredExercises as option (option.id)}
-                <button
-                    class="flex items-center justify-between px-2 py-3 text-left hover:bg-muted/60"
-                    onclick={() => {
-                        stagedIds = [...new Set([...stagedIds, option.id])];
-                        pickerOpen = false;
-                        search = '';
-                    }}
-                >
-                    <span class="text-sm font-medium">{option.name}</span>
-                    <Badge variant="outline" class="text-xs">{option.muscle_group}</Badge>
-                </button>
-            {:else}
-                <p class="px-2 py-6 text-center text-sm text-muted-foreground">
-                    Sin resultados.
-                    <Link href="/exercises" class="underline">Crear ejercicio</Link>
-                </p>
-            {/each}
-        </div>
-    </DialogContent>
-</Dialog>
+<ExercisePickerDialog
+    bind:open={pickerOpen}
+    {exercises}
+    onselect={(id) => (stagedIds = [...new Set([...stagedIds, id])])}
+/>
+
+<ExerciseDetailDialog bind:exerciseId={detailExerciseId} />

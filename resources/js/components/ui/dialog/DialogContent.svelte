@@ -27,6 +27,14 @@
             role="dialog"
             aria-modal="true"
         >
+            <button
+                type="button"
+                class="absolute top-3 right-3 z-10 flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-label="Cerrar"
+                onclick={close}
+            >
+                ✕
+            </button>
             {@render children?.()}
         </div>
     </div>

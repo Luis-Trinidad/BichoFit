@@ -27,14 +27,22 @@
         volumeKg: number;
     }
 
+    interface RoutineRow {
+        id: number;
+        name: string;
+        exercises: number;
+    }
+
     let {
         activeSession = null,
         week = { sessions: 0, volumeKg: 0 },
         recentSessions = [],
+        routines = [],
     }: {
         activeSession?: { id: number; started_at: string } | null;
         week?: { sessions: number; volumeKg: number };
         recentSessions?: RecentSession[];
+        routines?: RoutineRow[];
     } = $props();
 
     function formatDate(iso: string): string {
@@ -68,10 +76,29 @@
         </Card>
     {:else}
         <Card>
-            <CardContent class="flex flex-col items-center gap-3 py-8 text-center">
-                <p class="text-lg font-semibold">¿Listo para entrenar?</p>
-                <p class="text-sm text-muted-foreground">Registra tus series con reps y peso en el momento.</p>
-                <Button size="lg" onclick={() => router.post(startSession().url)}>Empezar entrenamiento</Button>
+            <CardContent class="flex flex-col gap-4 py-8 text-center">
+                <div class="flex flex-col items-center gap-3">
+                    <p class="text-lg font-semibold">¿Listo para entrenar?</p>
+                    <p class="text-sm text-muted-foreground">Registra tus series con reps y peso en el momento.</p>
+                    <Button size="lg" onclick={() => router.post(startSession().url)}>Empezar entrenamiento</Button>
+                </div>
+                {#if routines.length > 0}
+                    <div class="flex flex-col gap-2 border-t pt-4">
+                        <p class="text-xs font-medium text-muted-foreground">o lanza una rutina:</p>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            {#each routines as routine (routine.id)}
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onclick={() => router.post(startSession().url, { routine_id: routine.id })}
+                                >
+                                    {routine.name}
+                                    <span class="ml-1 text-muted-foreground">{routine.exercises}</span>
+                                </Button>
+                            {/each}
+                        </div>
+                    </div>
+                {/if}
             </CardContent>
         </Card>
     {/if}

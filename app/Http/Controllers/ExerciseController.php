@@ -15,7 +15,7 @@ class ExerciseController extends Controller
         $exercises = Exercise::forUser($request->user()->id)
             ->orderBy('muscle_group')
             ->orderBy('name')
-            ->get(['id', 'name', 'muscle_group', 'user_id']);
+            ->get(['id', 'name', 'muscle_group', 'user_id', 'equipment', 'image_path', 'gif_path']);
 
         $grouped = $exercises
             ->groupBy('muscle_group')
@@ -23,10 +23,31 @@ class ExerciseController extends Controller
                 'id' => $exercise->id,
                 'name' => $exercise->name,
                 'isCustom' => $exercise->user_id !== null,
+                'equipment' => $exercise->equipment,
+                'imageUrl' => $exercise->imageUrl(),
+                'hasGuide' => $exercise->gif_path !== null,
             ])->all());
 
         return Inertia::render('exercises/Index', [
             'groups' => Arr::sortRecursive($grouped->all()),
+        ]);
+    }
+
+    /** Detalle completo (guía GIF + pasos) para el diálogo de información. */
+    public function show(Request $request, Exercise $exercise)
+    {
+        return response()->json([
+            'id' => $exercise->id,
+            'name' => $exercise->name,
+            'muscleGroup' => $exercise->muscle_group,
+            'equipment' => $exercise->equipment,
+            'target' => $exercise->target,
+            'secondaryMuscles' => $exercise->secondary_muscles,
+            'description' => $exercise->description_es,
+            'steps' => $exercise->instructions_es,
+            'imageUrl' => $exercise->imageUrl(),
+            'gifUrl' => $exercise->gifUrl(),
+            'attribution' => $exercise->attribution,
         ]);
     }
 

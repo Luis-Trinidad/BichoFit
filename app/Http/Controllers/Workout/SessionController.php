@@ -7,16 +7,25 @@ use App\Models\Exercise;
 use App\Models\WorkoutSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class SessionController extends Controller
 {
-    /** Inicia la sesión del día y redirige a la pantalla de entrenamiento. */
+    /** Inicia la sesión del día (opcionalmente desde una rutina) y redirige. */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'routine_id' => [
+                'nullable',
+                Rule::exists('routines', 'id')->where('user_id', $request->user()->id),
+            ],
+        ]);
+
         $session = $request->user()->workoutSessions()->create([
             'date' => now()->toDateString(),
             'started_at' => Carbon::now(),
+            'routine_id' => $validated['routine_id'] ?? null,
         ]);
 
         return redirect()->route('workout-sessions.show', $session);
@@ -26,7 +35,17 @@ class SessionController extends Controller
     {
         $this->authorize('view', $session);
 
-        $session->load('sets.exercise');
+        $session->load('sets.exercise', 'routine.items');
+
+        // Ejercicios de la rutina origen (en orden) para preparar la sesión
+        $routineExerciseIds = collect();
+        if ($session->routine) {
+            $routineExerciseIds = $session->routine->items
+                ->whereNotIn('exercise_id', $session->sets->pluck('exercise_id'))
+                ->pluck('exercise_id')
+                ->unique()
+                ->values();
+        }
 
         // Última serie previa por ejercicio (sesiones pasadas) para pre-llenar
         // reps/peso cuando el ejercicio entra nuevo a la sesión.
@@ -60,7 +79,14 @@ class SessionController extends Controller
             'lastByExercise' => $lastByExercise->all(),
             'exercises' => Exercise::forUser($request->user()->id)
                 ->orderBy('name')
-                ->get(['id', 'name', 'muscle_group']),
+                ->get(['id', 'name', 'muscle_group', 'image_path'])
+                ->map(fn (Exercise $exercise) => [
+                    'id' => $exercise->id,
+                    'name' => $exercise->name,
+                    'muscle_group' => $exercise->muscle_group,
+                    'imageUrl' => $exercise->imageUrl(),
+                ])->all(),
+            'routineExerciseIds' => $routineExerciseIds->all(),
         ]);
     }
 
