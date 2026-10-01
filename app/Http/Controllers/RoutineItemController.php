@@ -36,6 +36,8 @@ class RoutineItemController extends Controller
         ]);
 
         if (array_key_exists('target', $validated)) {
+            // '' → null: sin objetivo, no cadenas vacías
+            $validated['target'] = trim((string) $validated['target']) ?: null;
             $item->update(['target' => $validated['target']]);
         }
 

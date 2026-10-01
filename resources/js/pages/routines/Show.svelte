@@ -54,11 +54,24 @@
     let editingName = $state(false);
     let nameDraft = $state(routine.name);
 
-    // borradores del objetivo por línea (ej. "3x8-12")
-    let targetDraft = $state<Record<number, string>>({});
+    // Objetivo estructurado: "3x8-12" → series=3, reps=8. Auto-guardado al cambiar.
+    let targetDraft = $state<Record<number, { sets: string; reps: string }>>({});
 
-    function addTarget(itemId: number) {
-        router.patch(updateItem({ item: itemId }).url, { target: targetDraft[itemId] ?? null }, { preserveScroll: true });
+    function parseItemTarget(target: string | null): { sets: string; reps: string } {
+        const match = /^(\d+)\s*[x×]\s*(\d+)/i.exec((target ?? '').trim());
+
+        return match ? { sets: match[1], reps: match[2] } : { sets: '', reps: '' };
+    }
+
+    function saveTarget(itemId: number) {
+        const draft = targetDraft[itemId];
+        if (!draft) return;
+        const hasBoth = draft.sets !== '' && draft.reps !== '';
+        const hasNone = draft.sets === '' && draft.reps === '';
+        const value = hasBoth ? `${draft.sets}x${draft.reps}` : hasNone ? null : undefined;
+
+        if (value === undefined) return; // incompleto: no guardar aún
+        router.patch(updateItem({ item: itemId }).url, { target: value }, { preserveScroll: true });
     }
 
     function move(itemId: number, direction: 'up' | 'down') {
@@ -172,23 +185,39 @@
                     </Button>
                 </CardContent>
                 <div class="flex items-center gap-2 border-t px-4 py-2">
+                    <span class="text-xs font-medium text-muted-foreground">Objetivo</span>
                     <Input
-                        placeholder="objetivo, ej. 3x8-12"
-                        class="h-7 flex-1 text-xs"
-                        value={targetDraft[item.id] ?? item.target ?? ''}
-                        oninput={(event) => (targetDraft[item.id] = event.currentTarget.value)}
-                        maxlength="50"
-                        aria-label="Objetivo de series y repeticiones"
+                        type="number"
+                        inputmode="numeric"
+                        min="1"
+                        max="20"
+                        placeholder="4"
+                        class="h-8 w-14 text-center text-sm tabular-nums"
+                        value={(targetDraft[item.id] ?? parseItemTarget(item.target)).sets}
+                        oninput={(event) => {
+                            const current = targetDraft[item.id] ?? parseItemTarget(item.target);
+                            targetDraft[item.id] = { ...current, sets: event.currentTarget.value };
+                        }}
+                        onchange={() => saveTarget(item.id)}
+                        aria-label="Series del objetivo"
                     />
-                    <Button
-                        size="sm"
-                        variant="ghost"
-                        class="h-7 px-2 text-xs"
-                        onclick={() => addTarget(item.id)}
-                        disabled={(targetDraft[item.id] ?? item.target ?? null) === item.target}
-                    >
-                        Listo
-                    </Button>
+                    <span class="text-sm text-muted-foreground">×</span>
+                    <Input
+                        type="number"
+                        inputmode="numeric"
+                        min="1"
+                        max="100"
+                        placeholder="10"
+                        class="h-8 w-14 text-center text-sm tabular-nums"
+                        value={(targetDraft[item.id] ?? parseItemTarget(item.target)).reps}
+                        oninput={(event) => {
+                            const current = targetDraft[item.id] ?? parseItemTarget(item.target);
+                            targetDraft[item.id] = { ...current, reps: event.currentTarget.value };
+                        }}
+                        onchange={() => saveTarget(item.id)}
+                        aria-label="Repeticiones del objetivo"
+                    />
+                    <span class="text-xs text-muted-foreground">reps</span>
                 </div>
             </Card>
         {:else}

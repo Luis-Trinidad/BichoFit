@@ -367,7 +367,12 @@
                     {/if}
                 </CardTitle>
                 <p class="text-xs text-muted-foreground">
-                    {block.muscleGroup}{objetivo ? ` · objetivo ${objetivo}` : ''}
+                    {block.muscleGroup}
+                    {#if objetivo}
+                        <span> · objetivo {objetivo}</span>
+                    {:else if routinePlan.length > 0}
+                        <span class="italic"> · sin objetivo (pon 4×10 en Rutinas)</span>
+                    {/if}
                 </p>
             </CardHeader>
             <CardContent class="flex flex-col gap-2">
