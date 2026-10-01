@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Exercise;
 use App\Models\WorkoutSession;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

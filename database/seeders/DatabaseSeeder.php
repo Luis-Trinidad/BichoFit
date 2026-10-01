@@ -17,9 +17,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(ExerciseSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Usuario de prueba solo en desarrollo (siembra idempotente en producción)
+        if (! app()->environment('production')) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
     }
 }

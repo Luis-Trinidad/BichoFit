@@ -7,7 +7,6 @@ use App\Http\Requests\StoreSetRequest;
 use App\Http\Requests\UpdateSetRequest;
 use App\Models\WorkoutSet;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 class SetController extends Controller
 {

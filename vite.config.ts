@@ -30,6 +30,9 @@ export default defineConfig({
         svelte(),
         wayfinder({
             formVariants: true,
+            // En imágenes Docker sin PHP se omite la regeneración y se usan
+            // los archivos ya generados (resources/js/routes, actions).
+            command: process.env.WAYFINDER_COMMAND ?? 'php artisan wayfinder:generate',
         }),
     ]),
     server: {

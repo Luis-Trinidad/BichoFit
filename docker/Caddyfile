@@ -1,0 +1,19 @@
+{
+	# FrankenPHP sirve la app; SERVER_NAME define dominio/puerto.
+	# En producción con dominio: SERVER_NAME=bichofit.midominio.com:443
+	# (Caddy gestiona certificados TLS automáticamente).
+}
+
+{$SERVER_NAME::8080} {
+	root * /app/public
+	encode zstd gzip
+
+	# Cabeceras de seguridad básicas
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	php_server
+}
