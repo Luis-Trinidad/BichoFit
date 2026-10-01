@@ -156,7 +156,7 @@ class WorkoutFlowTest extends TestCase
             ->where('sessions.data.0.id', $finished->id));
     }
 
-    public function test_dashboard_muestra_sesion_activa_y_semana(): void
+    public function test_dashboard_muestra_sesion_activa_racha_y_semana(): void
     {
         $user = User::factory()->create();
         $active = WorkoutSession::factory()->for($user)->active()->create();
@@ -168,7 +168,17 @@ class WorkoutFlowTest extends TestCase
         $response->assertOk()->assertInertia(fn (InertiaPage $page) => $page
             ->component('Dashboard')
             ->where('activeSession.id', $active->id)
-            ->where('week.sessions', 0));
+            ->where('week.sessions', 0)
+            ->where('week.streak', 0));
+
+        // Sesiones terminadas hoy y ayer → racha de 2
+        WorkoutSession::factory()->for($user)->create(['date' => today()]);
+        WorkoutSession::factory()->for($user)->create(['date' => today()->subDay()]);
+
+        $this->actingAs($user)->get(route('dashboard'))
+            ->assertInertia(fn (InertiaPage $page) => $page
+                ->where('week.sessions', 2)
+                ->where('week.streak', 2));
     }
 
     public function test_usuario_crea_ejercicio_personal_y_no_duplica(): void

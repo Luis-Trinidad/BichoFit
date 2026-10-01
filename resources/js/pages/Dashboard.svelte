@@ -43,12 +43,12 @@
 
     let {
         activeSession = null,
-        week = { sessions: 0, volumeKg: 0 },
+        week = { sessions: 0, streak: 0 },
         recentSessions = [],
         routines = [],
     }: {
         activeSession?: { id: number; started_at: string } | null;
-        week?: { sessions: number; volumeKg: number };
+        week?: { sessions: number; streak: number };
         recentSessions?: RecentSession[];
         routines?: RoutineRow[];
     } = $props();
@@ -163,10 +163,12 @@
         </Card>
         <Card>
             <CardContent class="py-4">
-                <p class="text-sm font-medium text-muted-foreground">Volumen semanal</p>
+                <p class="text-sm font-medium text-muted-foreground">Racha 🔥</p>
                 <p class="text-3xl font-bold">
-                    {week.volumeKg.toLocaleString('es')}
-                    <span class="text-base font-normal text-muted-foreground">kg</span>
+                    {week.streak}
+                    <span class="text-base font-normal text-muted-foreground">
+                        {week.streak === 1 ? 'día' : 'días'}
+                    </span>
                 </p>
             </CardContent>
         </Card>

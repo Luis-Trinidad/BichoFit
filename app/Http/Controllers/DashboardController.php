@@ -31,12 +31,8 @@ class DashboardController extends Controller
                     ->whereNotNull('finished_at')
                     ->where('date', '>=', $weekStart->toDateString())
                     ->count(),
-                'volumeKg' => (float) $user->workoutSets()
-                    ->whereHas('session', fn ($q) => $q
-                        ->where('user_id', $user->id)
-                        ->where('date', '>=', $weekStart->toDateString()))
-                    ->selectRaw('COALESCE(SUM(reps * weight_kg), 0) as aggregate')
-                    ->value('aggregate'),
+                // Racha: días consecutivos con sesión terminada (termina hoy o ayer)
+                'streak' => $this->streak($user),
             ],
             'recentSessions' => $recentSessions->map(fn (WorkoutSession $session) => [
                 'id' => $session->id,
@@ -59,5 +55,33 @@ class DashboardController extends Controller
                     ])->all(),
                 ])->all(),
         ]);
+    }
+
+    /** Días consecutivos con sesión terminada; la cadena puede terminar hoy o ayer. */
+    private function streak(User $user): int
+    {
+        $trainedDays = $user->workoutSessions()
+            ->whereNotNull('finished_at')
+            ->distinct()
+            ->pluck('date')
+            ->map(fn ($date) => $date->toDateString())
+            ->flip();
+
+        $cursor = today();
+        if (! $trainedDays->has($cursor->toDateString())) {
+            $cursor = $cursor->subDay();
+
+            if (! $trainedDays->has($cursor->toDateString())) {
+                return 0;
+            }
+        }
+
+        $streak = 0;
+        while ($trainedDays->has($cursor->toDateString())) {
+            $streak++;
+            $cursor = $cursor->subDay();
+        }
+
+        return $streak;
     }
 }
