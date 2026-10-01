@@ -14,18 +14,24 @@ class RoutineItemController extends Controller
     {
         $this->authorize('update', $routine);
 
-        $nextPosition = (int) $routine->items()->max('position') + 1;
+        $validated = $request->validated();
+        $day = $validated['day_of_week'] ?? 1;
+
+        $nextPosition = (int) $routine->items()
+            ->where('day_of_week', $day)
+            ->max('position') + 1;
 
         $routine->items()->create([
-            'exercise_id' => $request->validated('exercise_id'),
-            'target' => $request->validated('target'),
+            'exercise_id' => $validated['exercise_id'],
+            'day_of_week' => $day,
+            'target' => $validated['target'] ?? null,
             'position' => $nextPosition,
         ]);
 
         return back();
     }
 
-    /** Edita el objetivo de la línea o mueve el ejercicio arriba/abajo. */
+    /** Edita el objetivo de la línea o mueve el ejercicio arriba/abajo (dentro de su día). */
     public function update(Request $request, RoutineItem $item)
     {
         $this->authorize('update', $item->routine);
@@ -56,8 +62,9 @@ class RoutineItemController extends Controller
         $removedPosition = $item->position;
         $item->delete();
 
-        // Recompactar posiciones para que queden 1..n
+        // Recompactar posiciones del mismo día para que queden 1..n
         $routine->items()
+            ->where('day_of_week', $item->day_of_week)
             ->where('position', '>', $removedPosition)
             ->orderBy('position')
             ->get()
@@ -70,6 +77,7 @@ class RoutineItemController extends Controller
     {
         $isUp = $direction === 'up';
         $neighbor = RoutineItem::where('routine_id', $item->routine_id)
+            ->where('day_of_week', $item->day_of_week)
             ->where('position', $isUp ? '<' : '>', $item->position)
             ->orderBy('position', $isUp ? 'desc' : 'asc')
             ->first();

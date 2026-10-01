@@ -28,11 +28,16 @@
     import { store } from '@/routes/routines';
     import { show } from '@/routes/routines';
 
+    interface RoutineDaySummary {
+        dayName: string;
+        exercises: string[];
+    }
+
     interface RoutineRow {
         id: number;
         name: string;
         notes: string | null;
-        exercises: string[];
+        days: RoutineDaySummary[];
     }
 
     let { routines }: { routines: RoutineRow[] } = $props();
@@ -71,9 +76,11 @@
                 <Card class="transition-colors hover:bg-muted/40">
                     <CardContent class="flex flex-col gap-1 py-4">
                         <p class="font-semibold">{routine.name}</p>
-                        {#if routine.exercises.length}
+                        {#if routine.days.length}
                             <p class="line-clamp-2 text-sm text-muted-foreground">
-                                {routine.exercises.join(' · ')}
+                                {routine.days
+                                    .map((day) => `${day.dayName}: ${day.exercises.join(', ')}`)
+                                    .join(' · ')}
                             </p>
                         {:else}
                             <p class="text-sm text-muted-foreground">Sin ejercicios todavía</p>

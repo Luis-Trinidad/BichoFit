@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RoutineItem;
 use App\Models\User;
 use App\Models\WorkoutSession;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class DashboardController extends Controller
                     ->whereNotNull('finished_at')
                     ->where('date', '>=', $weekStart->toDateString())
                     ->count(),
-                // Racha: días consecutivos con sesión terminada (termina hoy o ayer)
+                // Racha: semanas consecutivas completadas (3+ sesiones terminadas)
                 'streak' => $this->streak($user),
             ],
             'recentSessions' => $recentSessions->map(fn (WorkoutSession $session) => [
@@ -48,38 +49,47 @@ class DashboardController extends Controller
                 ->map(fn ($routine) => [
                     'id' => $routine->id,
                     'name' => $routine->name,
-                    'items' => $routine->items->map(fn ($item) => [
-                        'name' => $item->exercise->name,
-                        'target' => $item->target,
-                        'imageUrl' => $item->exercise->resolvedImageUrl(),
-                    ])->all(),
+                    'days' => $routine->items->groupBy('day_of_week')->sortKeys()->map(fn ($items, $day) => [
+                        'day' => (int) $day,
+                        'dayName' => RoutineItem::dayName((int) $day),
+                        'items' => $items->map(fn ($item) => [
+                            'name' => $item->exercise->name,
+                            'target' => $item->target,
+                            'imageUrl' => $item->exercise->resolvedImageUrl(),
+                        ])->values()->all(),
+                    ])->values()->all(),
                 ])->all(),
         ]);
     }
 
-    /** Días consecutivos con sesión terminada; la cadena puede terminar hoy o ayer. */
+    /**
+     * Racha de semanas completadas seguidas: una semana cuenta cuando
+     * tiene al menos 3 sesiones terminadas. La semana en curso entra a
+     * la cadena al alcanzar las 3; hacia atrás todas deben cumplirla.
+     */
     private function streak(User $user): int
     {
-        $trainedDays = $user->workoutSessions()
+        $perWeek = $user->workoutSessions()
             ->whereNotNull('finished_at')
-            ->distinct()
-            ->pluck('date')
-            ->map(fn ($date) => $date->toDateString())
-            ->flip();
+            ->get(['date'])
+            ->groupBy(fn ($session) => $session->date->startOfWeek()->format('o-W'))
+            ->map->count();
 
-        $cursor = today();
-        if (! $trainedDays->has($cursor->toDateString())) {
-            $cursor = $cursor->subDay();
+        $cursor = now()->startOfWeek();
+        $streak = 0;
 
-            if (! $trainedDays->has($cursor->toDateString())) {
+        // La semana actual rompe la cadena solo cuando ya pasó y no se completó
+        if (($perWeek[$cursor->format('o-W')] ?? 0) < 3) {
+            $cursor = $cursor->subWeek();
+
+            if (($perWeek[$cursor->format('o-W')] ?? 0) < 3) {
                 return 0;
             }
         }
 
-        $streak = 0;
-        while ($trainedDays->has($cursor->toDateString())) {
+        while (($perWeek[$cursor->format('o-W')] ?? 0) >= 3) {
             $streak++;
-            $cursor = $cursor->subDay();
+            $cursor = $cursor->subWeek();
         }
 
         return $streak;

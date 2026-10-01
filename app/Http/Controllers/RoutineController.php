@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRoutineRequest;
 use App\Models\Exercise;
 use App\Models\Routine;
+use App\Models\RoutineItem;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -23,7 +24,15 @@ class RoutineController extends Controller
                 'id' => $routine->id,
                 'name' => $routine->name,
                 'notes' => $routine->notes,
-                'exercises' => $routine->items->pluck('exercise.name')->filter()->values()->all(),
+                'days' => $routine->items
+                    ->groupBy('day_of_week')
+                    ->sortKeys()
+                    ->map(fn ($items, $day) => [
+                        'dayName' => RoutineItem::dayName((int) $day),
+                        'exercises' => $items->pluck('exercise.name')->filter()->values()->all(),
+                    ])
+                    ->values()
+                    ->all(),
             ])->all(),
         ]);
     }
@@ -49,6 +58,7 @@ class RoutineController extends Controller
                 'items' => $routine->items->map(fn ($item) => [
                     'id' => $item->id,
                     'exerciseId' => $item->exercise_id,
+                    'dayOfWeek' => $item->day_of_week,
                     'name' => $item->exercise->name,
                     'muscleGroup' => $item->exercise->muscle_group,
                     'equipment' => $item->exercise->equipment,

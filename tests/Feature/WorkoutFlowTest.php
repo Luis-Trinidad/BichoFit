@@ -171,14 +171,22 @@ class WorkoutFlowTest extends TestCase
             ->where('week.sessions', 0)
             ->where('week.streak', 0));
 
-        // Sesiones terminadas hoy y ayer → racha de 2
+        // Racha semanal: hoy y ayer (misma semana, 2 sesiones) aún no completan la semana
         WorkoutSession::factory()->for($user)->create(['date' => today()]);
         WorkoutSession::factory()->for($user)->create(['date' => today()->subDay()]);
 
         $this->actingAs($user)->get(route('dashboard'))
             ->assertInertia(fn (InertiaPage $page) => $page
                 ->where('week.sessions', 2)
-                ->where('week.streak', 2));
+                ->where('week.streak', 0));
+
+        // Tres sesiones en la semana → semana completa → racha 1
+        WorkoutSession::factory()->for($user)->create(['date' => today()->subDays(2)]);
+
+        $this->actingAs($user)->get(route('dashboard'))
+            ->assertInertia(fn (InertiaPage $page) => $page
+                ->where('week.sessions', 3)
+                ->where('week.streak', 1));
     }
 
     public function test_usuario_crea_ejercicio_personal_y_no_duplica(): void

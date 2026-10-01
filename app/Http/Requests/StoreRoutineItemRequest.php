@@ -24,6 +24,7 @@ class StoreRoutineItemRequest extends FormRequest
                     $query->whereNull('user_id')->orWhere('user_id', $userId);
                 }),
             ],
+            'day_of_week' => ['sometimes', 'integer', 'min:1', 'max:7'],
             'target' => ['sometimes', 'nullable', 'string', 'max:50'],
         ];
     }

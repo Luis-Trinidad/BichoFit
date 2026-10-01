@@ -129,6 +129,31 @@ class RoutineTest extends TestCase
                 ->where('routineExerciseIds', $routine->items()->orderBy('position')->pluck('exercise_id')->all()));
     }
 
+    public function test_sesion_por_dia_muestra_solo_el_plan_de_ese_dia(): void
+    {
+        $user = User::factory()->create();
+        $routine = Routine::factory()->for($user)->create();
+        $exerciseA = Exercise::factory()->catalog()->create();
+        $exerciseB = Exercise::factory()->catalog()->create();
+
+        // Lunes: A · Miércoles: B
+        RoutineItem::factory()->for($routine)->for($exerciseA)->create(['day_of_week' => 1, 'position' => 1]);
+        RoutineItem::factory()->for($routine)->for($exerciseB)->create(['day_of_week' => 3, 'position' => 1]);
+
+        $this->actingAs($user)
+            ->post(route('workout-sessions.store'), ['routine_id' => $routine->id, 'routine_day' => 3]);
+
+        $session = WorkoutSession::where('user_id', $user->id)->first();
+        $this->assertSame(3, $session->routine_day);
+
+        $this->get(route('workout-sessions.show', $session))
+            ->assertOk()
+            ->assertInertia(fn (InertiaPage $page) => $page
+                ->where('routine.day', 'Miércoles')
+                ->has('routinePlan', 1)
+                ->where('routinePlan.0.exerciseId', $exerciseB->id));
+    }
+
     public function test_no_se_puede_iniciar_sesion_desde_rutina_ajena(): void
     {
         $user = User::factory()->create();

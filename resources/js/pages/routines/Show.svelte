@@ -27,12 +27,23 @@
     interface RoutineItemRow {
         id: number;
         exerciseId: number;
+        dayOfWeek: number;
         name: string;
         muscleGroup: string;
         equipment?: string | null;
         imageUrl?: string | null;
         target: string | null;
     }
+
+    const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+    const dayBlocks = $derived(
+        DAYS.map((label, index) => ({
+            day: index + 1,
+            label,
+            items: routine.items.filter((item) => item.dayOfWeek === index + 1),
+        })),
+    );
 
     interface RoutineProp {
         id: number;
@@ -50,6 +61,7 @@
     } = $props();
 
     let pickerOpen = $state(false);
+    let pickerDay = $state(1);
     let detailExerciseId = $state<number | null>(null);
     let editingName = $state(false);
     let nameDraft = $state(routine.name);
@@ -126,8 +138,28 @@
         <Badge variant="secondary" class="shrink-0">{routine.items.length} ejercicios</Badge>
     </header>
 
-    <div class="flex flex-col gap-2">
-        {#each routine.items as item, index (item.id)}
+    <div class="flex flex-col gap-4">
+        {#each dayBlocks as day (day.day)}
+            <section class="flex flex-col gap-2">
+                <div class="flex items-center justify-between px-1">
+                    <h2 class="text-sm font-bold tracking-wide uppercase {day.items.length === 0 ? 'text-muted-foreground/50' : ''}">
+                        {day.label}
+                        {#if day.items.length > 0}
+                            <span class="ml-1 font-normal text-muted-foreground">({day.items.length})</span>
+                        {/if}
+                    </h2>
+                    <button
+                        class="text-xs font-medium text-primary underline-offset-4 hover:underline"
+                        onclick={() => {
+                            pickerDay = day.day;
+                            pickerOpen = true;
+                        }}
+                    >
+                        + Agregar
+                    </button>
+                </div>
+
+                {#each day.items as item, index (item.id)}
             <Card>
                 <CardContent class="flex items-center gap-3 py-3">
                     <div class="flex shrink-0 flex-col items-center gap-0.5 text-muted-foreground">
@@ -143,7 +175,7 @@
                         <button
                             class="px-1 text-xs disabled:opacity-25"
                             aria-label="Bajar"
-                            disabled={index === routine.items.length - 1}
+                            disabled={index === day.items.length - 1}
                             onclick={() => move(item.id, 'down')}
                         >
                             ▼
@@ -220,19 +252,12 @@
                     <span class="text-xs text-muted-foreground">reps</span>
                 </div>
             </Card>
-        {:else}
-            <Card>
-                <CardContent class="flex flex-col items-center gap-3 py-8 text-center">
-                    <p class="text-sm text-muted-foreground">
-                        Agrega ejercicios en el orden que quieras entrenarlos.
-                    </p>
-                </CardContent>
-            </Card>
+                {/each}
+            </section>
         {/each}
     </div>
 
     <div class="flex flex-col gap-2">
-        <Button variant="outline" onclick={() => (pickerOpen = true)}>Agregar ejercicio</Button>
         {#if routine.items.length > 0}
             <Button size="lg" onclick={startFromRoutine}>Entrenar esta rutina</Button>
         {/if}
@@ -246,7 +271,12 @@
 <ExercisePickerDialog
     bind:open={pickerOpen}
     {exercises}
-    onselect={(id) => router.post(storeItem({ routine: routine.id }).url, { exercise_id: id }, { preserveScroll: true })}
+    onselect={(id) =>
+        router.post(
+            storeItem({ routine: routine.id }).url,
+            { exercise_id: id, day_of_week: pickerDay },
+            { preserveScroll: true },
+        )}
 />
 
 <ExerciseDetailDialog bind:exerciseId={detailExerciseId} />

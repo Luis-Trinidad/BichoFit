@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Workout;
 
 use App\Http\Controllers\Controller;
 use App\Models\Exercise;
+use App\Models\RoutineItem;
 use App\Models\WorkoutSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -20,12 +21,29 @@ class SessionController extends Controller
                 'nullable',
                 Rule::exists('routines', 'id')->where('user_id', $request->user()->id),
             ],
+            'routine_day' => ['nullable', 'integer', 'min:1', 'max:7'],
         ]);
+
+        $routineId = $validated['routine_id'] ?? null;
+        $routineDay = null;
+
+        if ($routineId !== null) {
+            $routine = $request->user()->routines()->findOrFail($routineId);
+            // Día pedido, o el de hoy si tiene ejercicios, o el primer día con ejercicios
+            $daysWithItems = $routine->items()->distinct()->pluck('day_of_week');
+            $today = now()->isoWeekday();
+            $routineDay = $validated['routine_day'] ?? null;
+
+            if ($routineDay === null || ! $daysWithItems->contains($routineDay)) {
+                $routineDay = $daysWithItems->contains($today) ? $today : $daysWithItems->min();
+            }
+        }
 
         $session = $request->user()->workoutSessions()->create([
             'date' => now()->toDateString(),
             'started_at' => Carbon::now(),
-            'routine_id' => $validated['routine_id'] ?? null,
+            'routine_id' => $routineId,
+            'routine_day' => $routineDay,
         ]);
 
         return redirect()->route('workout-sessions.show', $session);
@@ -37,16 +55,19 @@ class SessionController extends Controller
 
         $session->load('sets.exercise', 'routine.items');
 
-        // Ejercicios de la rutina origen (en orden) para preparar la sesión
+        // Plan del día de la rutina que cubre esta sesión (en orden)
         $routineExerciseIds = collect();
         $routinePlan = collect();
         if ($session->routine) {
-            $routinePlan = $session->routine->items->map(fn ($item) => [
+            $dayItems = $session->routine->items
+                ->when($session->routine_day !== null, fn ($items) => $items->where('day_of_week', $session->routine_day))
+                ->values();
+            $routinePlan = $dayItems->map(fn ($item) => [
                 'exerciseId' => $item->exercise_id,
                 'name' => $item->exercise->name,
                 'target' => $item->target,
             ])->values();
-            $routineExerciseIds = $session->routine->items
+            $routineExerciseIds = $dayItems
                 ->whereNotIn('exercise_id', $session->sets->pluck('exercise_id'))
                 ->pluck('exercise_id')
                 ->unique()
@@ -87,6 +108,9 @@ class SessionController extends Controller
             'routine' => $session->routine ? [
                 'id' => $session->routine->id,
                 'name' => $session->routine->name,
+                'day' => $session->routine_day !== null
+                    ? RoutineItem::dayName($session->routine_day)
+                    : null,
             ] : null,
             'routinePlan' => $routinePlan->all(),
             'lastByExercise' => $lastByExercise->all(),

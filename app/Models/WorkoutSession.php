@@ -16,13 +16,14 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property Carbon $date
  * @property int|null $routine_id
+ * @property int|null $routine_day
  * @property string|null $notes
  * @property Carbon $started_at
  * @property Carbon|null $finished_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['date', 'routine_id', 'notes', 'started_at', 'finished_at'])] class WorkoutSession extends Model
+#[Fillable(['date', 'routine_id', 'routine_day', 'notes', 'started_at', 'finished_at'])] class WorkoutSession extends Model
 {
     /** @use HasFactory<WorkoutSessionFactory> */
     use HasFactory;

@@ -66,7 +66,7 @@
         routineExerciseIds = [],
     }: {
         session: SessionProp;
-        routine?: { id: number; name: string } | null;
+        routine?: { id: number; name: string; day: string | null } | null;
         routinePlan?: { exerciseId: number; name: string; target: string | null }[];
         lastByExercise?: Record<string, { reps: number; weightKg: number }>;
         exercises?: import('@/components/ExercisePickerDialog.svelte').ExerciseOption[];
@@ -309,7 +309,9 @@
         {#if routine && routineProgress}
             <div class="rounded-xl border bg-muted/30 px-4 py-3">
                 <div class="flex items-center justify-between gap-2">
-                    <p class="text-sm font-semibold">{routine.name}</p>
+                    <p class="text-sm font-semibold">
+                        {routine.name}{routine.day ? ` · ${routine.day}` : ''}
+                    </p>
                     <p class="text-sm tabular-nums text-muted-foreground">
                         {routineProgress.done}/{routineProgress.total} completados
                     </p>

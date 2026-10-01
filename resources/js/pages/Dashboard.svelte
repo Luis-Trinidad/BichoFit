@@ -27,10 +27,16 @@
         imageUrl?: string | null;
     }
 
+    interface RoutineDay {
+        day: number;
+        dayName: string;
+        items: RoutineItemPreview[];
+    }
+
     interface RoutineRow {
         id: number;
         name: string;
-        items: RoutineItemPreview[];
+        days: RoutineDay[];
     }
 
     interface RecentSession {
@@ -62,20 +68,26 @@
     // --- asistente de arranque: elegir → ver → confirmar ---
     let wizardOpen = $state(false);
     let pickedId = $state<number | null>(null); // null = entrenamiento libre
-    let step = $state<'elegir' | 'detalle'>('elegir');
+    let pickedDay = $state<number | null>(null);
+    let step = $state<'elegir' | 'dias' | 'preview'>('elegir');
     let countdown = $state<number | null>(null);
 
     const pickedRoutine = $derived(routines.find((r) => r.id === pickedId) ?? null);
+    const pickedRoutineDay = $derived(
+        pickedRoutine?.days.find((d) => d.day === pickedDay) ?? null,
+    );
 
     function abrirWizard() {
         if (countdown !== null) return;
         pickedId = null;
+        pickedDay = null;
         step = 'elegir';
         wizardOpen = true;
     }
 
-    function lanzar(routineId: number | null) {
+    function lanzar(routineId: number | null, day: number | null = null) {
         pickedId = routineId;
+        pickedDay = day;
         wizardOpen = false;
         countdown = 3;
     }
@@ -91,7 +103,9 @@
             countdown = null;
             router.post(
                 startSession().url,
-                pickedId !== null ? { routine_id: pickedId } : {},
+                pickedId !== null
+                    ? { routine_id: pickedId, routine_day: pickedDay ?? undefined }
+                    : {},
             );
         }, 1000);
 
@@ -167,9 +181,10 @@
                 <p class="text-3xl font-bold">
                     {week.streak}
                     <span class="text-base font-normal text-muted-foreground">
-                        {week.streak === 1 ? 'día' : 'días'}
+                        {week.streak === 1 ? 'semana' : 'semanas'}
                     </span>
                 </p>
+                <p class="text-xs text-muted-foreground">3+ entrenos/semana</p>
             </CardContent>
         </Card>
     </div>
@@ -209,17 +224,23 @@
             <button
                 class="text-sm text-muted-foreground underline-offset-4 hover:underline"
                 onclick={() => {
-                    if (step === 'detalle') {
+                    if (step === 'preview') {
+                        step = 'dias';
+                    } else if (step === 'dias') {
                         step = 'elegir';
                     } else {
                         wizardOpen = false;
                     }
                 }}
             >
-                ← {step === 'detalle' ? 'Cambiar' : 'Cerrar'}
+                ← {step === 'preview' ? 'Cambiar día' : step === 'dias' ? 'Cambiar rutina' : 'Cerrar'}
             </button>
             <p class="text-sm font-semibold">
-                {step === 'detalle' ? (pickedRoutine?.name ?? 'Entrenamiento libre') : '¿Qué toca hoy?'}
+                {step === 'preview'
+                    ? `${pickedRoutine?.name ?? ''} · ${pickedRoutineDay?.dayName ?? ''}`
+                    : step === 'dias'
+                        ? (pickedRoutine?.name ?? '')
+                        : '¿Qué toca hoy?'}
             </p>
             <span class="w-14"></span>
         </header>
@@ -244,7 +265,9 @@
                             class="flex items-center justify-between rounded-xl border bg-background px-4 py-4 text-left transition-colors hover:bg-muted/60 active:scale-[0.98]"
                             onclick={() => {
                                 pickedId = routine.id;
-                                step = 'detalle';
+                                pickedDay = null;
+                                step = routine.days.length > 1 ? 'dias' : 'preview';
+                                if (routine.days.length === 1) pickedDay = routine.days[0].day;
                             }}
                         >
                             <span>
@@ -257,9 +280,29 @@
                         </button>
                     {/each}
                 </div>
-            {:else if pickedRoutine}
+            {:else if step === 'dias' && pickedRoutine}
+                <div class="mx-auto flex max-w-lg flex-col gap-2">
+                    {#each pickedRoutine.days as day (day.day)}
+                        <button
+                            class="flex items-center justify-between rounded-xl border bg-background px-4 py-4 text-left transition-colors hover:bg-muted/60 active:scale-[0.98]"
+                            onclick={() => {
+                                pickedDay = day.day;
+                                step = 'preview';
+                            }}
+                        >
+                            <span>
+                                <span class="block font-semibold">{day.dayName}</span>
+                                <span class="block text-xs text-muted-foreground">
+                                    {day.items.length} ejercicios
+                                </span>
+                            </span>
+                            <span class="text-muted-foreground">›</span>
+                        </button>
+                    {/each}
+                </div>
+            {:else if pickedRoutineDay}
                 <div class="mx-auto flex max-w-lg flex-col gap-3">
-                    {#each pickedRoutine.items as item, index (index)}
+                    {#each pickedRoutineDay.items as item, index (index)}
                         <div class="flex items-center gap-3 rounded-xl border bg-background px-3 py-2.5">
                             <span class="w-5 text-center text-sm font-semibold text-muted-foreground">
                                 {index + 1}
@@ -299,12 +342,12 @@
             {/if}
         </div>
 
-        {#if step === 'detalle'}
+        {#if step === 'preview' || (step === 'dias' && pickedRoutine && pickedRoutine.days.length === 0)}
             <div class="border-t px-4 pt-3 pb-[max(env(safe-area-inset-bottom),1rem)]">
                 <div class="mx-auto max-w-lg">
-                    <Button size="lg" class="h-14 w-full gap-2 text-base font-semibold" onclick={() => lanzar(pickedId)}>
+                    <Button size="lg" class="h-14 w-full gap-2 text-base font-semibold" onclick={() => lanzar(pickedId, pickedDay)}>
                         <Play class="size-5 fill-current" />
-                        Comenzar{pickedRoutine ? ` · ${pickedRoutine.name}` : ''}
+                        Comenzar{pickedRoutineDay ? ` · ${pickedRoutineDay.dayName}` : ''}
                     </Button>
                 </div>
             </div>
@@ -315,7 +358,11 @@
 {#if countdown !== null}
     <div class="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-6 bg-background">
         <p class="text-sm font-medium tracking-wide text-muted-foreground uppercase">
-            {pickedRoutine ? pickedRoutine.name : 'Entrenamiento libre'}
+            {pickedRoutineDay
+                ? `${pickedRoutine?.name ?? ''} · ${pickedRoutineDay.dayName}`
+                : pickedRoutine
+                    ? pickedRoutine.name
+                    : 'Entrenamiento libre'}
         </p>
         {#key countdown}
             <div
