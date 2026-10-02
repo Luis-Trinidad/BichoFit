@@ -9,6 +9,7 @@
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/manifest.json">
         <meta name="theme-color" content="#7c3aed">
+        <meta name="app-version" content="{{ md5_file(public_path('build/manifest.json')) }}">
 
         @fonts
 

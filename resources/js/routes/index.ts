@@ -378,3 +378,84 @@ dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 })
 
 dashboard.form = dashboardForm
+
+/**
+* @see \App\Http\Controllers\VersionController::__invoke
+* @see app/Http/Controllers/VersionController.php:10
+* @route '/version'
+*/
+export const version = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: version.url(options),
+    method: 'get',
+})
+
+version.definition = {
+    methods: ["get","head"],
+    url: '/version',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\VersionController::__invoke
+* @see app/Http/Controllers/VersionController.php:10
+* @route '/version'
+*/
+version.url = (options?: RouteQueryOptions) => {
+    return version.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\VersionController::__invoke
+* @see app/Http/Controllers/VersionController.php:10
+* @route '/version'
+*/
+version.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: version.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\VersionController::__invoke
+* @see app/Http/Controllers/VersionController.php:10
+* @route '/version'
+*/
+version.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: version.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\VersionController::__invoke
+* @see app/Http/Controllers/VersionController.php:10
+* @route '/version'
+*/
+const versionForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: version.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\VersionController::__invoke
+* @see app/Http/Controllers/VersionController.php:10
+* @route '/version'
+*/
+versionForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: version.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\VersionController::__invoke
+* @see app/Http/Controllers/VersionController.php:10
+* @route '/version'
+*/
+versionForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: version.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+version.form = versionForm

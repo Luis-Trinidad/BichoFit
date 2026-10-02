@@ -4,6 +4,7 @@
     import AppLogoIcon from '@/components/AppLogoIcon.svelte';
     import BottomNav from '@/components/BottomNav.svelte';
     import UserMenuContent from '@/components/UserMenuContent.svelte';
+    import VersionCheck from '@/components/VersionCheck.svelte';
     import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
     import {
         DropdownMenu,
@@ -67,5 +68,6 @@
     </main>
 
     <BottomNav />
+    <VersionCheck />
     <Toaster />
 </div>
