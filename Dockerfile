@@ -1,6 +1,6 @@
-FROM dunglas/frankenphp:1-php8.4-alpine AS base
+FROM dunglas/frankenphp:1-php8.4 AS base
 
-# ---- Dependencias PHP ----
+# ---- Dependencias PHP (vendor) ----
 FROM base AS vendor
 WORKDIR /app
 RUN install-php-extensions pdo_pgsql intl zip exif opcache @composer
@@ -30,8 +30,15 @@ RUN npm run build
 FROM base
 WORKDIR /app
 
-# Tesseract + español para el OCR de la báscula
-RUN apk add --no-cache tesseract-ocr tesseract-ocr-data-spa
+# Tesseract + español para el OCR de la báscula (Debian, no alpine)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa \
+    && rm -rf /var/lib/apt/lists/*
+
+# Extensiones PHP con verificación explícita: si pdo_pgsql no carga, el build falla aquí
+RUN install-php-extensions pdo_pgsql intl zip exif opcache \
+    && php -m | grep -q pdo_pgsql \
+    || (echo 'FATAL: pdo_pgsql no cargó — diagnosticando:' && php -i | grep -i extension_dir && ls /usr/local/lib/php/extensions/*/ && exit 1)
 
 COPY --from=vendor /app /app
 COPY --from=frontend /app/public/build /app/public/build
@@ -39,7 +46,7 @@ COPY public/ public/
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh \
-    && mkdir -p storage/logs storage/framework/{cache/data,sessions,testing,views} bootstrap/cache \
+    && mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
 EXPOSE 8080
