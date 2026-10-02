@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Workout\SessionController::store
 * @see app/Http/Controllers/Workout/SessionController.php:17
@@ -32,6 +32,28 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
 })
+
+/**
+* @see \App\Http\Controllers\Workout\SessionController::store
+* @see app/Http/Controllers/Workout/SessionController.php:17
+* @route '/workout-sessions'
+*/
+const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Workout\SessionController::store
+* @see app/Http/Controllers/Workout/SessionController.php:17
+* @route '/workout-sessions'
+*/
+storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\Workout\SessionController::show
@@ -102,6 +124,43 @@ show.head = (args: { session: number | { id: number } } | [session: number | { i
 })
 
 /**
+* @see \App\Http\Controllers\Workout\SessionController::show
+* @see app/Http/Controllers/Workout/SessionController.php:53
+* @route '/workout-sessions/{session}'
+*/
+const showForm = (args: { session: number | { id: number } } | [session: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Workout\SessionController::show
+* @see app/Http/Controllers/Workout/SessionController.php:53
+* @route '/workout-sessions/{session}'
+*/
+showForm.get = (args: { session: number | { id: number } } | [session: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Workout\SessionController::show
+* @see app/Http/Controllers/Workout/SessionController.php:53
+* @route '/workout-sessions/{session}'
+*/
+showForm.head = (args: { session: number | { id: number } } | [session: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+show.form = showForm
+
+/**
 * @see \App\Http\Controllers\Workout\SessionController::finish
 * @see app/Http/Controllers/Workout/SessionController.php:133
 * @route '/workout-sessions/{session}/finish'
@@ -160,6 +219,28 @@ finish.post = (args: { session: number | { id: number } } | [session: number | {
 })
 
 /**
+* @see \App\Http\Controllers\Workout\SessionController::finish
+* @see app/Http/Controllers/Workout/SessionController.php:133
+* @route '/workout-sessions/{session}/finish'
+*/
+const finishForm = (args: { session: number | { id: number } } | [session: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: finish.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Workout\SessionController::finish
+* @see app/Http/Controllers/Workout/SessionController.php:133
+* @route '/workout-sessions/{session}/finish'
+*/
+finishForm.post = (args: { session: number | { id: number } } | [session: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: finish.url(args, options),
+    method: 'post',
+})
+
+finish.form = finishForm
+
+/**
 * @see \App\Http\Controllers\Workout\SessionController::destroy
 * @see app/Http/Controllers/Workout/SessionController.php:142
 * @route '/workout-sessions/{session}'
@@ -216,6 +297,38 @@ destroy.delete = (args: { session: number | { id: number } } | [session: number 
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+/**
+* @see \App\Http\Controllers\Workout\SessionController::destroy
+* @see app/Http/Controllers/Workout/SessionController.php:142
+* @route '/workout-sessions/{session}'
+*/
+const destroyForm = (args: { session: number | { id: number } } | [session: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Workout\SessionController::destroy
+* @see app/Http/Controllers/Workout/SessionController.php:142
+* @route '/workout-sessions/{session}'
+*/
+destroyForm.delete = (args: { session: number | { id: number } } | [session: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+destroy.form = destroyForm
 
 const SessionController = { store, show, finish, destroy }
 

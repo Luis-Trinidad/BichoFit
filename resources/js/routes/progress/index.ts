@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\ProgressController::__invoke
 * @see app/Http/Controllers/ProgressController.php:12
@@ -42,6 +42,43 @@ show.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress'
+*/
+const showForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress'
+*/
+showForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress'
+*/
+showForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+show.form = showForm
 
 /**
 * @see \App\Http\Controllers\ProgressController::__invoke
@@ -104,6 +141,43 @@ exercise.head = (args: { exercise: string | number } | [exercise: string | numbe
     url: exercise.url(args, options),
     method: 'head',
 })
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress/{exercise}'
+*/
+const exerciseForm = (args: { exercise: string | number } | [exercise: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exercise.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress/{exercise}'
+*/
+exerciseForm.get = (args: { exercise: string | number } | [exercise: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exercise.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress/{exercise}'
+*/
+exerciseForm.head = (args: { exercise: string | number } | [exercise: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exercise.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+exercise.form = exerciseForm
 
 const progress = {
     show: Object.assign(show, show),

@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ProgressController::__invoke
 * @see app/Http/Controllers/ProgressController.php:12
@@ -43,6 +43,42 @@ ProgressController969148ad13eb7575c5e2a15b7adfcc2c.head = (options?: RouteQueryO
     method: 'head',
 })
 
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress'
+*/
+const ProgressController969148ad13eb7575c5e2a15b7adfcc2cForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ProgressController969148ad13eb7575c5e2a15b7adfcc2c.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress'
+*/
+ProgressController969148ad13eb7575c5e2a15b7adfcc2cForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ProgressController969148ad13eb7575c5e2a15b7adfcc2c.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress'
+*/
+ProgressController969148ad13eb7575c5e2a15b7adfcc2cForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ProgressController969148ad13eb7575c5e2a15b7adfcc2c.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+ProgressController969148ad13eb7575c5e2a15b7adfcc2c.form = ProgressController969148ad13eb7575c5e2a15b7adfcc2cForm
 /**
 * @see \App\Http\Controllers\ProgressController::__invoke
 * @see app/Http/Controllers/ProgressController.php:12
@@ -104,6 +140,43 @@ ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1f.head = (args: { exercise: str
     url: ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1f.url(args, options),
     method: 'head',
 })
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress/{exercise}'
+*/
+const ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1fForm = (args: { exercise: string | number } | [exercise: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1f.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress/{exercise}'
+*/
+ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1fForm.get = (args: { exercise: string | number } | [exercise: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1f.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProgressController::__invoke
+* @see app/Http/Controllers/ProgressController.php:12
+* @route '/progress/{exercise}'
+*/
+ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1fForm.head = (args: { exercise: string | number } | [exercise: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1f.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1f.form = ProgressControllerbe73b85ff4cf9d027c5ec899e2043e1fForm
 
 /**
 * Multiple routes resolve to \App\Http\Controllers\ProgressController::ProgressController, so this export is a

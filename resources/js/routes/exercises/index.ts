@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\ExerciseController::index
 * @see app/Http/Controllers/ExerciseController.php:13
@@ -42,6 +42,43 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Http\Controllers\ExerciseController::index
+* @see app/Http/Controllers/ExerciseController.php:13
+* @route '/exercises'
+*/
+const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ExerciseController::index
+* @see app/Http/Controllers/ExerciseController.php:13
+* @route '/exercises'
+*/
+indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ExerciseController::index
+* @see app/Http/Controllers/ExerciseController.php:13
+* @route '/exercises'
+*/
+indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\ExerciseController::show
@@ -112,6 +149,43 @@ show.head = (args: { exercise: number | { id: number } } | [exercise: number | {
 })
 
 /**
+* @see \App\Http\Controllers\ExerciseController::show
+* @see app/Http/Controllers/ExerciseController.php:38
+* @route '/exercises/{exercise}'
+*/
+const showForm = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ExerciseController::show
+* @see app/Http/Controllers/ExerciseController.php:38
+* @route '/exercises/{exercise}'
+*/
+showForm.get = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ExerciseController::show
+* @see app/Http/Controllers/ExerciseController.php:38
+* @route '/exercises/{exercise}'
+*/
+showForm.head = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+show.form = showForm
+
+/**
 * @see \App\Http\Controllers\ExerciseController::store
 * @see app/Http/Controllers/ExerciseController.php:55
 * @route '/exercises'
@@ -144,6 +218,28 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
 })
+
+/**
+* @see \App\Http\Controllers\ExerciseController::store
+* @see app/Http/Controllers/ExerciseController.php:55
+* @route '/exercises'
+*/
+const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\ExerciseController::store
+* @see app/Http/Controllers/ExerciseController.php:55
+* @route '/exercises'
+*/
+storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\ExerciseController::destroy
@@ -202,6 +298,38 @@ destroy.delete = (args: { exercise: number | { id: number } } | [exercise: numbe
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+/**
+* @see \App\Http\Controllers\ExerciseController::destroy
+* @see app/Http/Controllers/ExerciseController.php:62
+* @route '/exercises/{exercise}'
+*/
+const destroyForm = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\ExerciseController::destroy
+* @see app/Http/Controllers/ExerciseController.php:62
+* @route '/exercises/{exercise}'
+*/
+destroyForm.delete = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+destroy.form = destroyForm
 
 const exercises = {
     index: Object.assign(index, index),

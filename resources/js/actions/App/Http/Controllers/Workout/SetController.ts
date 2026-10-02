@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Workout\SetController::store
 * @see app/Http/Controllers/Workout/SetController.php:13
@@ -50,6 +50,28 @@ store.post = (args: { session: string | number } | [session: string | number ] |
     url: store.url(args, options),
     method: 'post',
 })
+
+/**
+* @see \App\Http\Controllers\Workout\SetController::store
+* @see app/Http/Controllers/Workout/SetController.php:13
+* @route '/workout-sessions/{session}/sets'
+*/
+const storeForm = (args: { session: string | number } | [session: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Workout\SetController::store
+* @see app/Http/Controllers/Workout/SetController.php:13
+* @route '/workout-sessions/{session}/sets'
+*/
+storeForm.post = (args: { session: string | number } | [session: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(args, options),
+    method: 'post',
+})
+
+store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\Workout\SetController::update
@@ -110,6 +132,38 @@ update.patch = (args: { set: number | { id: number } } | [set: number | { id: nu
 })
 
 /**
+* @see \App\Http\Controllers\Workout\SetController::update
+* @see app/Http/Controllers/Workout/SetController.php:22
+* @route '/workout-sets/{set}'
+*/
+const updateForm = (args: { set: number | { id: number } } | [set: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Workout\SetController::update
+* @see app/Http/Controllers/Workout/SetController.php:22
+* @route '/workout-sets/{set}'
+*/
+updateForm.patch = (args: { set: number | { id: number } } | [set: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+update.form = updateForm
+
+/**
 * @see \App\Http\Controllers\Workout\SetController::destroy
 * @see app/Http/Controllers/Workout/SetController.php:31
 * @route '/workout-sets/{set}'
@@ -166,6 +220,38 @@ destroy.delete = (args: { set: number | { id: number } } | [set: number | { id: 
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+/**
+* @see \App\Http\Controllers\Workout\SetController::destroy
+* @see app/Http/Controllers/Workout/SetController.php:31
+* @route '/workout-sets/{set}'
+*/
+const destroyForm = (args: { set: number | { id: number } } | [set: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Workout\SetController::destroy
+* @see app/Http/Controllers/Workout/SetController.php:31
+* @route '/workout-sets/{set}'
+*/
+destroyForm.delete = (args: { set: number | { id: number } } | [set: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+destroy.form = destroyForm
 
 const SetController = { store, update, destroy }
 

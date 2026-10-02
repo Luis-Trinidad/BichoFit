@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\RoutineItemController::store
 * @see app/Http/Controllers/RoutineItemController.php:13
@@ -56,6 +56,28 @@ store.post = (args: { routine: number | { id: number } } | [routine: number | { 
     url: store.url(args, options),
     method: 'post',
 })
+
+/**
+* @see \App\Http\Controllers\RoutineItemController::store
+* @see app/Http/Controllers/RoutineItemController.php:13
+* @route '/routines/{routine}/items'
+*/
+const storeForm = (args: { routine: number | { id: number } } | [routine: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\RoutineItemController::store
+* @see app/Http/Controllers/RoutineItemController.php:13
+* @route '/routines/{routine}/items'
+*/
+storeForm.post = (args: { routine: number | { id: number } } | [routine: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(args, options),
+    method: 'post',
+})
+
+store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\RoutineItemController::update
@@ -116,6 +138,38 @@ update.patch = (args: { item: number | { id: number } } | [item: number | { id: 
 })
 
 /**
+* @see \App\Http\Controllers\RoutineItemController::update
+* @see app/Http/Controllers/RoutineItemController.php:35
+* @route '/routine-items/{item}'
+*/
+const updateForm = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\RoutineItemController::update
+* @see app/Http/Controllers/RoutineItemController.php:35
+* @route '/routine-items/{item}'
+*/
+updateForm.patch = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+update.form = updateForm
+
+/**
 * @see \App\Http\Controllers\RoutineItemController::destroy
 * @see app/Http/Controllers/RoutineItemController.php:57
 * @route '/routine-items/{item}'
@@ -172,6 +226,38 @@ destroy.delete = (args: { item: number | { id: number } } | [item: number | { id
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+/**
+* @see \App\Http\Controllers\RoutineItemController::destroy
+* @see app/Http/Controllers/RoutineItemController.php:57
+* @route '/routine-items/{item}'
+*/
+const destroyForm = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\RoutineItemController::destroy
+* @see app/Http/Controllers/RoutineItemController.php:57
+* @route '/routine-items/{item}'
+*/
+destroyForm.delete = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+destroy.form = destroyForm
 
 const routineItems = {
     store: Object.assign(store, store),

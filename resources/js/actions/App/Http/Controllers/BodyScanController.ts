@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\BodyScanController::index
 * @see app/Http/Controllers/BodyScanController.php:16
@@ -44,6 +44,43 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
+* @see \App\Http\Controllers\BodyScanController::index
+* @see app/Http/Controllers/BodyScanController.php:16
+* @route '/body-scans'
+*/
+const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\BodyScanController::index
+* @see app/Http/Controllers/BodyScanController.php:16
+* @route '/body-scans'
+*/
+indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\BodyScanController::index
+* @see app/Http/Controllers/BodyScanController.php:16
+* @route '/body-scans'
+*/
+indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+index.form = indexForm
+
+/**
 * @see \App\Http\Controllers\BodyScanController::ocr
 * @see app/Http/Controllers/BodyScanController.php:32
 * @route '/body-scans/ocr'
@@ -78,6 +115,28 @@ ocr.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 })
 
 /**
+* @see \App\Http\Controllers\BodyScanController::ocr
+* @see app/Http/Controllers/BodyScanController.php:32
+* @route '/body-scans/ocr'
+*/
+const ocrForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: ocr.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\BodyScanController::ocr
+* @see app/Http/Controllers/BodyScanController.php:32
+* @route '/body-scans/ocr'
+*/
+ocrForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: ocr.url(options),
+    method: 'post',
+})
+
+ocr.form = ocrForm
+
+/**
 * @see \App\Http\Controllers\BodyScanController::store
 * @see app/Http/Controllers/BodyScanController.php:55
 * @route '/body-scans'
@@ -110,6 +169,28 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
 })
+
+/**
+* @see \App\Http\Controllers\BodyScanController::store
+* @see app/Http/Controllers/BodyScanController.php:55
+* @route '/body-scans'
+*/
+const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\BodyScanController::store
+* @see app/Http/Controllers/BodyScanController.php:55
+* @route '/body-scans'
+*/
+storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\BodyScanController::destroy
@@ -168,6 +249,38 @@ destroy.delete = (args: { scan: number | { id: number } } | [scan: number | { id
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+/**
+* @see \App\Http\Controllers\BodyScanController::destroy
+* @see app/Http/Controllers/BodyScanController.php:66
+* @route '/body-scans/{scan}'
+*/
+const destroyForm = (args: { scan: number | { id: number } } | [scan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\BodyScanController::destroy
+* @see app/Http/Controllers/BodyScanController.php:66
+* @route '/body-scans/{scan}'
+*/
+destroyForm.delete = (args: { scan: number | { id: number } } | [scan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+destroy.form = destroyForm
 
 const BodyScanController = { index, ocr, store, destroy }
 
