@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(ExerciseSeeder::class);
+        // Dataset completo (1,324 ejercicios + GIFs): auto-descarga el media
+        // la primera vez en producción; en dev usa el dataset de /Users/... si existe
+        $this->call(ExerciseDatasetSeeder::class);
 
         // Usuario de prueba solo en desarrollo (siembra idempotente en producción)
         if (! app()->environment('production')) {
