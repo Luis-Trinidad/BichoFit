@@ -197,3 +197,17 @@
 *::-webkit-scrollbar {
     display: none;
 }
+
+
+/* App nativa: sin zoom raro al abrir el teclado en iOS */
+html {
+    height: -webkit-fill-available;
+}
+
+input,
+select,
+textarea {
+    /* iOS hace zoom si el font-size del input es < 16px; forzarlo
+       aunque las clases digan text-sm (14px) */
+    font-size: max(16px, 1em) !important;
+}
