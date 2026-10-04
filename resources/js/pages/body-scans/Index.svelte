@@ -118,7 +118,7 @@
     }
 
     function save() {
-        const payload: Record<string, unknown> = { scanned_at: scannedDate, source: 'ocr' };
+        const payload: Record<string, string | Record<string, string>> = { scanned_at: scannedDate, source: 'ocr' };
         for (const field of FIELDS) {
             if (form[field.key] !== '' && form[field.key] !== undefined) {
                 payload[field.key] = form[field.key];
@@ -135,7 +135,7 @@
                 form = {};
                 confidence = {};
                 extraForm = {};
-                fileInput && (fileInput.value = '');
+                if (fileInput) fileInput.value = '';
             },
         });
     }

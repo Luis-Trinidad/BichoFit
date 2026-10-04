@@ -96,7 +96,7 @@
     $effect(() => {
         if (countdown === null) return;
         const timer = setTimeout(() => {
-            if (countdown > 1) {
+            if (countdown !== null && countdown > 1) {
                 countdown -= 1;
 
                 return;

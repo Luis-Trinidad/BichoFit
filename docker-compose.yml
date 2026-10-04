@@ -1,50 +1,50 @@
 services:
-  app:
-    build: .
-    container_name: bichofit-app
-    restart: unless-stopped
-    environment:
-      APP_NAME: BichoFit
-      APP_ENV: production
-      APP_DEBUG: 'false'
-      APP_LOCALE: es
-      APP_URL: ${APP_URL:-http://localhost:8080}
-      APP_KEY: ${APP_KEY:-}
-      # Con dominio: SERVER_NAME=bichofit.tudominio.com:443 (TLS automático)
-      SERVER_NAME: ${SERVER_NAME:-:8080}
-      DB_CONNECTION: ${DB_CONNECTION:-pgsql}
-      DB_HOST: ${DB_HOST:-db}
-      DB_PORT: ${DB_PORT:-5432}
-      DB_DATABASE: ${DB_DATABASE:-bichofit}
-      DB_USERNAME: ${DB_USERNAME:-bichofit}
-      DB_PASSWORD: ${DB_PASSWORD:-secret}
-    ports:
-      - '${APP_PORT:-8080}:8080'
-    volumes:
-      - app-storage:/app/storage
-    depends_on:
-      db:
-        condition: service_healthy
+    app:
+        build: .
+        container_name: bichofit-app
+        restart: unless-stopped
+        environment:
+            APP_NAME: BichoFit
+            APP_ENV: production
+            APP_DEBUG: 'false'
+            APP_LOCALE: es
+            APP_URL: ${APP_URL:-http://localhost:8080}
+            APP_KEY: ${APP_KEY:-}
+            # Con dominio: SERVER_NAME=bichofit.tudominio.com:443 (TLS automático)
+            SERVER_NAME: ${SERVER_NAME:-:8080}
+            DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+            DB_HOST: ${DB_HOST:-db}
+            DB_PORT: ${DB_PORT:-5432}
+            DB_DATABASE: ${DB_DATABASE:-bichofit}
+            DB_USERNAME: ${DB_USERNAME:-bichofit}
+            DB_PASSWORD: ${DB_PASSWORD:-secret}
+        ports:
+            - '${APP_PORT:-8080}:8080'
+        volumes:
+            - app-storage:/app/storage
+        depends_on:
+            db:
+                condition: service_healthy
 
-  db:
-    image: postgres:16-alpine
-    container_name: bichofit-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: bichofit
-      POSTGRES_USER: bichofit
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
-    ports:
-      # 5433 en el host para no chocar con un Postgres local existente (solo dev)
-      - '5433:5432'
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U bichofit -d bichofit']
-      interval: 5s
-      timeout: 5s
-      retries: 10
+    db:
+        image: postgres:16-alpine
+        container_name: bichofit-db
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: bichofit
+            POSTGRES_USER: bichofit
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+        ports:
+            # 5433 en el host para no chocar con un Postgres local existente (solo dev)
+            - '5433:5432'
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U bichofit -d bichofit']
+            interval: 5s
+            timeout: 5s
+            retries: 10
 
 volumes:
-  app-storage:
-  db-data:
+    app-storage:
+    db-data:

@@ -140,9 +140,9 @@
         if (!option) return;
         draft.items.push({
             key: nextTempKey--,
-            id: null,
+            id: null as unknown as number,
             exerciseId,
-            dayOfWeek: pickerDay,
+            dayOfWeek: pickerDay ?? 1,
             name: option.name,
             muscleGroup: option.muscle_group,
             imageUrl: option.imageUrl ?? null,
@@ -213,7 +213,7 @@
                         editingName = false;
                     }}
                 >
-                    <Input bind:value={draft.name} class="h-9" maxlength="100" aria-label="Nombre de la rutina" />
+                    <Input bind:value={draft.name} class="h-9" aria-label="Nombre de la rutina" />
                     <Button size="sm" type="submit" disabled={!draft.name.trim()}>OK</Button>
                 </form>
             {:else}

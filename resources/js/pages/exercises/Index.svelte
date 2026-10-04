@@ -264,8 +264,8 @@
         <form class="flex flex-col gap-4" onsubmit={(event) => { event.preventDefault(); submit(); }}>
             <div class="grid gap-2">
                 <Label for="exercise-name">Nombre</Label>
-                <Input id="exercise-name" bind:value={name} placeholder="Ej. Press landmine" required maxlength="255" />
-                <InputError message={page.props.errors.name} />
+                <Input id="exercise-name" bind:value={name} placeholder="Ej. Press landmine" required maxlength={255} />
+                <InputError message={page.props.errors.name as string | undefined} />
             </div>
             <div class="grid gap-2">
                 <Label>Grupo muscular</Label>

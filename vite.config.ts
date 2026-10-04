@@ -35,7 +35,9 @@ export default defineConfig({
             formVariants: true,
             // En imágenes Docker sin PHP se omite la regeneración y se usan
             // los archivos ya generados (resources/js/routes, actions).
-            command: process.env.WAYFINDER_COMMAND ?? 'php artisan wayfinder:generate',
+            command:
+                process.env.WAYFINDER_COMMAND ??
+                'php artisan wayfinder:generate',
         }),
     ]),
     server: {
@@ -76,6 +78,13 @@ export default defineConfig({
         ignorePatterns: [
             '.github/**',
             'composer.json',
+            'docs/**',
+            'lang/**',
+            'database/data/**',
+            'database/seeders/data/**',
+            'resources/js/actions/**',
+            'resources/js/routes/**',
+            'resources/js/wayfinder/**',
             'resources/js/components/ui/*',
             'resources/views/mail/*',
         ],

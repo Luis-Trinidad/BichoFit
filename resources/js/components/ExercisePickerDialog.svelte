@@ -10,6 +10,7 @@
         nameEn?: string | null;
         muscle_group: string;
         imageUrl?: string | null;
+        gifUrl?: string | null;
     }
 
     let {

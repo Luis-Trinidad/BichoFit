@@ -107,7 +107,7 @@
         <form class="flex flex-col gap-4" onsubmit={(event) => { event.preventDefault(); create(); }}>
             <div class="grid gap-2">
                 <Label for="routine-name">Nombre</Label>
-                <Input id="routine-name" bind:value={name} placeholder="Ej. Push A" required maxlength="100" />
+                <Input id="routine-name" bind:value={name} placeholder="Ej. Push A" required />
             </div>
             <DialogFooter>
                 <Button type="submit" disabled={!name.trim()}>Crear y agregar ejercicios</Button>

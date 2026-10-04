@@ -14,6 +14,8 @@ báscula de bioimpedancia.
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL%2016-4169e1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Docker](https://img.shields.io/badge/Docker-2496ed?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com)
 [![Tests](https://img.shields.io/badge/tests-81%20pasando-brightgreen?style=flat-square)](./tests)
+[![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-blue?style=flat-square)](LICENSE)
+[![PRs bienvenidos](https://img.shields.io/badge/PRs-bienvenidos-ff69b4?style=flat-square)](CONTRIBUTING.md)
 
 </div>
 
@@ -21,14 +23,14 @@ báscula de bioimpedancia.
 
 ## Capturas
 
-| | |
-|:---:|:---:|
-| **Inicio** — propuesta de valor | **Hoy** — arranque con racha semanal |
-| ![Inicio](docs/screenshots/01-inicio.png) | ![Hoy](docs/screenshots/02-hoy.png) |
+|                                                                      |                                                            |
+| :------------------------------------------------------------------: | :--------------------------------------------------------: |
+|                   **Inicio** — propuesta de valor                    |            **Hoy** — arranque con racha semanal            |
+|              ![Inicio](docs/screenshots/01-inicio.png)               |            ![Hoy](docs/screenshots/02-hoy.png)             |
 | **Entrenamiento** — checklist por objetivo, GIF de guía y cronómetro | **Rutinas** — plan semanal editable con guardado por lotes |
-| ![Entrenamiento](docs/screenshots/03-entrenamiento.png) | ![Rutinas](docs/screenshots/04-rutinas.png) |
-| **Progreso** — volumen, 1RM estimado y composición | **Cuerpo** — OCR de la báscula con confirmación |
-| ![Progreso](docs/screenshots/05-progreso.png) | ![Cuerpo](docs/screenshots/06-cuerpo.png) |
+|       ![Entrenamiento](docs/screenshots/03-entrenamiento.png)        |        ![Rutinas](docs/screenshots/04-rutinas.png)         |
+|          **Progreso** — volumen, 1RM estimado y composición          |      **Cuerpo** — OCR de la báscula con confirmación       |
+|            ![Progreso](docs/screenshots/05-progreso.png)             |         ![Cuerpo](docs/screenshots/06-cuerpo.png)          |
 
 ---
 
@@ -52,7 +54,7 @@ báscula de bioimpedancia.
 - Arma tu plan **día por día** (Lunes a Domingo), con reordenamiento,
   colapso por día y objetivo por ejercicio (`4x10`)
 - **Guardado por lotes**: editas todo en borrador y un solo
-  *Guardar cambios* sincroniza en una transacción
+  _Guardar cambios_ sincroniza en una transacción
 - Catálogo de **1,391 ejercicios** en español con búsqueda bilingüe
   (español/inglés) y ejercicio personalizados por usuario
 
@@ -86,14 +88,14 @@ báscula de bioimpedancia.
 
 ## Stack
 
-| Capa | Tecnología |
-|---|---|
-| Backend | Laravel 13 (PHP 8.4) · Eloquent · Policies · Form Requests |
-| Frontend | Svelte 5 (runes) · Inertia 3 · Tailwind CSS v4 · Chart.js |
-| Tema | Personalizado *Rhea* — base Zinc, primario Violeta, tipografías Oxanium + Public Sans |
-| Base de datos | PostgreSQL 16 |
-| OCR | Tesseract 5 (spa+eng) con parser propio |
-| Deploy | Docker · FrankenPHP (HTTPS automático) |
+| Capa          | Tecnología                                                                            |
+| ------------- | ------------------------------------------------------------------------------------- |
+| Backend       | Laravel 13 (PHP 8.4) · Eloquent · Policies · Form Requests                            |
+| Frontend      | Svelte 5 (runes) · Inertia 3 · Tailwind CSS v4 · Chart.js                             |
+| Tema          | Personalizado _Rhea_ — base Zinc, primario Violeta, tipografías Oxanium + Public Sans |
+| Base de datos | PostgreSQL 16                                                                         |
+| OCR           | Tesseract 5 (spa+eng) con parser propio                                               |
+| Deploy        | Docker · FrankenPHP (HTTPS automático)                                                |
 
 ---
 
@@ -203,6 +205,17 @@ docs/                                      # diseño y capturas
 - [x] Tema propio y UI 100% en español
 - [ ] PWA instalable (manifest + service worker + ícono)
 - [ ] Timer de descanso entre series
+
+---
+
+## Contribuir
+
+¡Las contribuciones son bienvenidas! Lee [CONTRIBUTING.md](CONTRIBUTING.md)
+para el setup, convenciones y áreas que agradecen ayuda.
+
+Reporta bugs con la plantilla de [issues](https://github.com/Luis-Trinidad/BichoFit/issues/new/choose)
+y revisa el [código de conducta](CODE_OF_CONDUCT.md). Vulnerabilidades de
+seguridad: [SECURITY.md](SECURITY.md) (reporte privado, no issues públicos).
 
 ---
 
