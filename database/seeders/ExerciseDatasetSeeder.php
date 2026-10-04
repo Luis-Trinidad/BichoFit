@@ -130,41 +130,42 @@ class ExerciseDatasetSeeder extends Seeder
             $this->command?->info('Media descargado ('.round(filesize($tarball) / 1048576).' MB).');
         }
 
-        // Extraer en memoria los archivos necesarios (solo los del dataset)
+        // Extraer TODO el repo de una vez (un solo tar, segundos) y copiar
+        // solo lo necesario del dataset al storage
+        $extractDir = $cachePath.'/extracted';
+        @mkdir($extractDir, 0775, true);
+        $extract = Process::run([
+            'tar', '-xzf', $tarball, '-C', $extractDir, '--strip-components=1',
+        ]);
+
+        if ($extract->failed()) {
+            $this->command?->warn('No se pudo extraer el tarball: '.$extract->errorOutput());
+
+            return;
+        }
+
         $extracted = 0;
         foreach ($records as $record) {
             $sourceId = (string) $record['id'];
             $imageFile = basename((string) ($record['image'] ?? ''));
             $gifFile = basename((string) ($record['gif_url'] ?? ''));
 
-            if ($imageFile && ! is_file($jpgDir.'/'.$sourceId.'.jpg')) {
-                $this->extractFromTarball($tarball, 'images/'.$imageFile, $jpgDir.'/'.$sourceId.'.jpg') && $extracted++;
+            if ($imageFile && ! is_file($jpgDir.'/'.$sourceId.'.jpg')
+                && is_file($extractDir.'/images/'.$imageFile)) {
+                copy($extractDir.'/images/'.$imageFile, $jpgDir.'/'.$sourceId.'.jpg') && $extracted++;
             }
 
-            if ($gifFile && ! is_file($gifDir.'/'.$sourceId.'.gif')) {
-                $this->extractFromTarball($tarball, 'videos/'.$gifFile, $gifDir.'/'.$sourceId.'.gif') && $extracted++;
+            if ($gifFile && ! is_file($gifDir.'/'.$sourceId.'.gif')
+                && is_file($extractDir.'/videos/'.$gifFile)) {
+                copy($extractDir.'/videos/'.$gifFile, $gifDir.'/'.$sourceId.'.gif') && $extracted++;
             }
         }
 
-        // Limpiar caché (ya no la necesitamos)
+        // Limpiar caché y extracción temporal
         @unlink($tarball);
+        Process::run(['rm', '-rf', $extractDir]);
 
         $this->command?->info("Media extraído: {$extracted} archivos.");
-    }
-
-    /** Extrae un archivo individual del tar.gz del dataset. */
-    private function extractFromTarball(string $tarball, string $innerPath, string $destination): bool
-    {
-        // tar -xzf archivo.tar.gz -O ruta/interna > destino
-        $result = Process::run([
-            'tar', '-xzf', $tarball, '-O', 'exercises-dataset-main/'.$innerPath,
-        ]);
-
-        if ($result->failed() || $result->output() === '') {
-            return false;
-        }
-
-        return file_put_contents($destination, $result->output()) !== false;
     }
 
     private function mapGroup(string $category, ?string $target): string
