@@ -26,6 +26,12 @@ fi
 # El volumen de storage puede venir vacío: garantizar la estructura que Laravel espera
 mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 
+# Limpiar cachés viejos PRIMERO (la config cachea el hash del manifest;
+# si no se limpia, Inertia ve versión desactualizada y no hidrata)
+php artisan config:clear >/dev/null 2>&1 || true
+php artisan route:clear >/dev/null 2>&1 || true
+php artisan view:clear >/dev/null 2>&1 || true
+
 # Cachear config/rutas/vistas con las variables de entorno definitivas
 php artisan config:cache
 php artisan route:cache
