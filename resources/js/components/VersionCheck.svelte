@@ -1,50 +1,72 @@
 <script lang="ts">
-    import { page } from '@inertiajs/svelte';
     import { RefreshCw } from '@lucide/svelte';
     import { Button } from '@/components/ui/button';
+    import { page } from '@inertiajs/svelte';
 
-    // Versión inicial: la que traía el HTML al cargar
-    let currentVersion = $state<string | null>(null);
     let needsUpdate = $state(false);
 
-    $effect(() => {
-        if (currentVersion !== null) return;
+    /** Versión actual del cliente: se fija una sola vez al cargar la app. */
+    function initialVersion(): string | null {
+        return document.querySelector('meta[name="app-version"]')?.getAttribute('content') ?? null;
+    }
 
-        // leer la versión del meta tag (lo incrusta el backend en cada render)
-        const meta = document.querySelector('meta[name="app-version"]');
-        currentVersion = meta?.getAttribute('content') ?? null;
-
-        if (!currentVersion) return;
-
-        const check = setInterval(async () => {
-            try {
-                const response = await fetch('/version', {
-                    headers: { Accept: 'application/json' },
-                    cache: 'no-store',
-                });
-                const data = await response.json();
-                if (data.version && data.version !== currentVersion) {
-                    needsUpdate = true;
-                    clearInterval(check);
-                }
-            } catch {
-                // sin conexión o error: seguir intentando
-            }
-        }, 15_000); // cada 15 segundos
-
-        return () => clearInterval(check);
-    });
+    async function checkOnce(clientVersion: string): Promise<string | null> {
+        try {
+            const response = await fetch(`/version?t=${Date.now()}`, {
+                headers: { Accept: 'application/json' },
+                cache: 'no-store',
+            });
+            if (!response.ok) return null;
+            const data = await response.json();
+            return data.version && data.version !== clientVersion ? data.version : null;
+        } catch {
+            return null;
+        }
+    }
 
     function hardRefresh() {
-        // limpiar service workers y caché del navegador antes de recargar
         if ('caches' in window) {
             caches.keys().then((names) => names.forEach((n) => caches.delete(n)));
         }
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
         }
+        // recarga dura: salta caché de disco y de memorias intermedias
         window.location.href = window.location.pathname + '?v=' + Date.now();
     }
+
+    $effect(() => {
+        const clientVersion = initialVersion();
+        if (!clientVersion) return;
+
+        let stopped = false;
+        let timer: ReturnType<typeof setInterval> | undefined;
+
+        async function check() {
+            if (stopped || needsUpdate) return;
+            const newVersion = await checkOnce(clientVersion);
+            if (newVersion) needsUpdate = true;
+        }
+
+        // Poll periódico mientras la app está abierta
+        timer = setInterval(check, 15_000);
+
+        // PWA: verificar en cuanto la app vuelve al frente (caso real:
+        // la abres al día siguiente tras un deploy nocturno)
+        const onVisible = () => {
+            if (document.visibilityState === 'visible') void check();
+        };
+        document.addEventListener('visibilitychange', onVisible);
+
+        // Y una verificación inmediata al montar
+        void check();
+
+        return () => {
+            stopped = true;
+            if (timer) clearInterval(timer);
+            document.removeEventListener('visibilitychange', onVisible);
+        };
+    });
 </script>
 
 {#if needsUpdate}
@@ -56,7 +78,7 @@
             <div>
                 <h2 class="text-lg font-bold">Nueva versión disponible</h2>
                 <p class="mt-1 text-sm text-muted-foreground">
-                    Se actualizó BichoFit. Actualiza para seguir usando la última versión.
+                    Se actualizó BichoFit. Toca actualizar para usar la última versión.
                 </p>
             </div>
             <Button size="lg" class="w-full" onclick={hardRefresh}>

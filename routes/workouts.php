@@ -12,6 +12,8 @@ use App\Http\Controllers\Workout\SessionController;
 use App\Http\Controllers\Workout\SetController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('version', VersionController::class)->name('version');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
@@ -37,8 +39,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('body-scans', [BodyScanController::class, 'store'])->name('body-scans.store');
     Route::delete('body-scans/{scan}', [BodyScanController::class, 'destroy'])
         ->whereNumber('scan')->name('body-scans.destroy');
-
-    Route::get('version', VersionController::class)->name('version');
 
     Route::get('progress', ProgressController::class)->name('progress.show');
     Route::get('progress/{exercise}', ProgressController::class)->whereNumber('exercise')->name('progress.exercise');

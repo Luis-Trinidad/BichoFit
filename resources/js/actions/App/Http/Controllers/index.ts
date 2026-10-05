@@ -1,7 +1,7 @@
+import VersionController from './VersionController'
 import DashboardController from './DashboardController'
 import Workout from './Workout'
 import BodyScanController from './BodyScanController'
-import VersionController from './VersionController'
 import ProgressController from './ProgressController'
 import ExerciseController from './ExerciseController'
 import RoutineController from './RoutineController'
@@ -9,10 +9,10 @@ import RoutineItemController from './RoutineItemController'
 import Settings from './Settings'
 
 const Controllers = {
+    VersionController: Object.assign(VersionController, VersionController),
     DashboardController: Object.assign(DashboardController, DashboardController),
     Workout: Object.assign(Workout, Workout),
     BodyScanController: Object.assign(BodyScanController, BodyScanController),
-    VersionController: Object.assign(VersionController, VersionController),
     ProgressController: Object.assign(ProgressController, ProgressController),
     ExerciseController: Object.assign(ExerciseController, ExerciseController),
     RoutineController: Object.assign(RoutineController, RoutineController),
