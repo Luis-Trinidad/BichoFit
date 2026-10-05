@@ -1,0 +1,1 @@
+import{Ct as e,H as t,I as n,Ot as r,Rt as i,T as a,U as o,dt as s,et as c,i as l,it as u,kt as d,pt as f}from"./wayfinder-BRQuM_6D.js";function p(p,m){d(m,!0);let h=l(m,`title`,3,``),g=`BichoFit`,_=e(()=>h()?`${h()} - ${g}`:g);a(`6lre40`,e=>{var r=o(),a=f(r);n(a,()=>m.children??i),u(()=>{s.title=c(_)??``}),t(e,r)}),r()}export{p as t};

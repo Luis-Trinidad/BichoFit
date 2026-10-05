@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "style": {
+    "file": "assets/fonts-CvgALTcK.css",
+    "familyStyles": {
+      "oxanium": "@font-face {\n  font-family: \"Oxanium\";\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"/build/assets/oxanium-500-normal-tnlOn7Ka.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Oxanium\";\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"/build/assets/oxanium-500-normal-BsTRBkab.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Oxanium\";\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"/build/assets/oxanium-600-normal-DW9ldEDP.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Oxanium\";\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"/build/assets/oxanium-600-normal-DNQhW0y0.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Oxanium\";\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(\"/build/assets/oxanium-700-normal-l0hKEjh4.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Oxanium\";\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(\"/build/assets/oxanium-700-normal-b_KP-pae.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n.font-oxanium {\n  font-family: var(--font-oxanium);\n}",
+      "public-sans": "@font-face {\n  font-family: \"Public Sans\";\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"/build/assets/public-sans-400-normal-8Rpg0ruU.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Public Sans\";\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"/build/assets/public-sans-400-normal-SBbinRkI.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Public Sans\";\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"/build/assets/public-sans-500-normal-NlrCPXnF.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Public Sans\";\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"/build/assets/public-sans-500-normal-vCxiVFAq.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Public Sans\";\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"/build/assets/public-sans-600-normal-Fru-LXNs.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Public Sans\";\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"/build/assets/public-sans-600-normal-BR59oU-I.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n.font-public-sans {\n  font-family: var(--font-public-sans);\n}"
+    },
+    "variables": {
+      "oxanium": "--font-oxanium: \"Oxanium\";",
+      "public-sans": "--font-public-sans: \"Public Sans\";"
+    }
+  },
+  "preloads": [
+    {
+      "alias": "oxanium",
+      "family": "Oxanium",
+      "weight": 500,
+      "style": "normal",
+      "file": "assets/oxanium-500-normal-tnlOn7Ka.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    },
+    {
+      "alias": "oxanium",
+      "family": "Oxanium",
+      "weight": 600,
+      "style": "normal",
+      "file": "assets/oxanium-600-normal-DW9ldEDP.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    },
+    {
+      "alias": "oxanium",
+      "family": "Oxanium",
+      "weight": 700,
+      "style": "normal",
+      "file": "assets/oxanium-700-normal-l0hKEjh4.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    },
+    {
+      "alias": "public-sans",
+      "family": "Public Sans",
+      "weight": 400,
+      "style": "normal",
+      "file": "assets/public-sans-400-normal-8Rpg0ruU.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    },
+    {
+      "alias": "public-sans",
+      "family": "Public Sans",
+      "weight": 500,
+      "style": "normal",
+      "file": "assets/public-sans-500-normal-NlrCPXnF.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    },
+    {
+      "alias": "public-sans",
+      "family": "Public Sans",
+      "weight": 600,
+      "style": "normal",
+      "file": "assets/public-sans-600-normal-Fru-LXNs.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    }
+  ],
+  "families": {
+    "oxanium": {
+      "family": "Oxanium",
+      "variable": "--font-oxanium",
+      "variants": {
+        "500:normal": {
+          "files": [
+            {
+              "file": "assets/oxanium-500-normal-tnlOn7Ka.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "file": "assets/oxanium-500-normal-BsTRBkab.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        },
+        "600:normal": {
+          "files": [
+            {
+              "file": "assets/oxanium-600-normal-DW9ldEDP.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "file": "assets/oxanium-600-normal-DNQhW0y0.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        },
+        "700:normal": {
+          "files": [
+            {
+              "file": "assets/oxanium-700-normal-l0hKEjh4.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "file": "assets/oxanium-700-normal-b_KP-pae.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        }
+      }
+    },
+    "public-sans": {
+      "family": "Public Sans",
+      "variable": "--font-public-sans",
+      "variants": {
+        "400:normal": {
+          "files": [
+            {
+              "file": "assets/public-sans-400-normal-8Rpg0ruU.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "file": "assets/public-sans-400-normal-SBbinRkI.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        },
+        "500:normal": {
+          "files": [
+            {
+              "file": "assets/public-sans-500-normal-NlrCPXnF.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "file": "assets/public-sans-500-normal-vCxiVFAq.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        },
+        "600:normal": {
+          "files": [
+            {
+              "file": "assets/public-sans-600-normal-Fru-LXNs.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "file": "assets/public-sans-600-normal-BR59oU-I.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

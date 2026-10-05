@@ -15,16 +15,10 @@ COPY routes/ routes/
 COPY artisan ./
 RUN composer dump-autoload --optimize --no-dev
 
-# ---- Frontend (Svelte) ----
-FROM node:22-alpine AS frontend
-WORKDIR /app
-# Sin PHP en este stage: wayfinder usa los archivos generados del repo
-ENV WAYFINDER_COMMAND=true
-COPY package.json package-lock.json .npmrc ./
-RUN npm ci
-COPY resources/ resources/
-COPY vite.config.ts tsconfig.json svelte.config.js components.json ./
-RUN npm run build
+# ---- Frontend: assets pre-construidos en el repo (public/build) ----
+# Dokploy cacheaba los builds y servía código viejo; pre-construir localmente
+# y subir los assets garantiza que lo que se sirve es lo que está en git.
+# Para actualizar el frontend: correr npm run build localmente y hacer commit.
 
 # ---- Imagen final ----
 FROM base
@@ -41,7 +35,7 @@ RUN install-php-extensions pdo_pgsql intl zip exif opcache \
     || (echo 'FATAL: pdo_pgsql no cargó — diagnosticando:' && php -i | grep -i extension_dir && ls /usr/local/lib/php/extensions/*/ && exit 1)
 
 COPY --from=vendor /app /app
-COPY --from=frontend /app/public/build /app/public/build
+COPY public/build/ /app/public/build/
 COPY public/ public/
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
