@@ -106,18 +106,23 @@
     }
 
     function setTargetPart(key: number, part: 'sets' | 'reps', value: string) {
-        const item = draft.items.find((entry) => entry.key === key);
-        if (!item) return;
-        const current = parseItemTarget(item.target);
-        const next = { ...current, [part]: value };
-        item.target = next.sets !== '' && next.reps !== '' ? `${next.sets}x${next.reps}` : null;
+        draft.items = draft.items.map((entry) => {
+            if (entry.key !== key) return entry;
+            const current = parseItemTarget(entry.target);
+            const next = { ...current, [part]: value };
+
+            return {
+                ...entry,
+                target: next.sets !== '' && next.reps !== '' ? `${next.sets}x${next.reps}` : null,
+            };
+        });
     }
 
     function dayOfWeekOf(key: number): number {
         return draft.items.find((item) => item.key === key)?.dayOfWeek ?? 1;
     }
 
-    /** Mover dentro de su día: el orden del array dentro del día es el orden real. */
+    /** Mover dentro de su día: intercambia con el vecino y reconstruye el array. */
     function move(key: number, direction: 'up' | 'down') {
         const sameDay = draft.items.filter((item) => item.dayOfWeek === dayOfWeekOf(key));
         const pos = sameDay.findIndex((item) => item.key === key);
@@ -126,9 +131,11 @@
 
         const indexA = draft.items.findIndex((item) => item.key === key);
         const indexB = draft.items.findIndex((item) => item.key === swapWith.key);
-        const temp = draft.items[indexA];
-        draft.items[indexA] = draft.items[indexB];
-        draft.items[indexB] = temp;
+        const items = [...draft.items];
+        const temp = items[indexA];
+        items[indexA] = items[indexB];
+        items[indexB] = temp;
+        draft.items = items;
     }
 
     function removeItem(key: number) {
