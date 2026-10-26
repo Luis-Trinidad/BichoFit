@@ -41,8 +41,8 @@
       "_wayfinder-BRQuM_6D.js"
     ]
   },
-  "_PasskeyVerify-Cb5KP1lo.js": {
-    "file": "assets/PasskeyVerify-Cb5KP1lo.js",
+  "_PasskeyVerify-B15tf80o.js": {
+    "file": "assets/PasskeyVerify-B15tf80o.js",
     "name": "PasskeyVerify",
     "imports": [
       "_utils-DKenN4f-.js",
@@ -246,7 +246,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-BI-JsNPy.css",
+    "file": "assets/app-CNtTr0KV.css",
     "name": "app",
     "names": [
       "app.css"
@@ -255,7 +255,7 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-CJq9EXV7.js",
+    "file": "assets/app-CkFJg_ur.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -291,7 +291,7 @@
     ]
   },
   "resources/js/pages/Dashboard.svelte": {
-    "file": "assets/Dashboard-DchOU3_W.js",
+    "file": "assets/Dashboard-CqSBbOhw.js",
     "name": "Dashboard",
     "src": "resources/js/pages/Dashboard.svelte",
     "isDynamicEntry": true,
@@ -310,7 +310,7 @@
     ]
   },
   "resources/js/pages/Welcome.svelte": {
-    "file": "assets/Welcome-By6dSOdW.js",
+    "file": "assets/Welcome-BiqsRcV9.js",
     "name": "Welcome",
     "src": "resources/js/pages/Welcome.svelte",
     "isDynamicEntry": true,
@@ -323,7 +323,7 @@
     ]
   },
   "resources/js/pages/auth/ConfirmPassword.svelte": {
-    "file": "assets/ConfirmPassword-Cl8HMVF9.js",
+    "file": "assets/ConfirmPassword-B2SYQ0Oc.js",
     "name": "ConfirmPassword",
     "src": "resources/js/pages/auth/ConfirmPassword.svelte",
     "isDynamicEntry": true,
@@ -338,11 +338,11 @@
       "_InputError-C62LS98A.js",
       "_label-gKX_gOX1.js",
       "_confirm-D8px2weI.js",
-      "_PasskeyVerify-Cb5KP1lo.js"
+      "_PasskeyVerify-B15tf80o.js"
     ]
   },
   "resources/js/pages/auth/ForgotPassword.svelte": {
-    "file": "assets/ForgotPassword-CNWnkAYI.js",
+    "file": "assets/ForgotPassword-o6BQJ6ha.js",
     "name": "ForgotPassword",
     "src": "resources/js/pages/auth/ForgotPassword.svelte",
     "isDynamicEntry": true,
@@ -360,7 +360,7 @@
     ]
   },
   "resources/js/pages/auth/Login.svelte": {
-    "file": "assets/Login-CNdM4Fq3.js",
+    "file": "assets/Login-DnFc8QyW.js",
     "name": "Login",
     "src": "resources/js/pages/auth/Login.svelte",
     "isDynamicEntry": true,
@@ -375,13 +375,13 @@
       "_InputError-C62LS98A.js",
       "_input-CoA2rbSa.js",
       "_label-gKX_gOX1.js",
-      "_PasskeyVerify-Cb5KP1lo.js",
+      "_PasskeyVerify-B15tf80o.js",
       "_TextLink-CPh9_VA9.js",
       "_password-rge1EBvc.js"
     ]
   },
   "resources/js/pages/auth/Register.svelte": {
-    "file": "assets/Register-DLokK0WQ.js",
+    "file": "assets/Register-CRT8Dx6L.js",
     "name": "Register",
     "src": "resources/js/pages/auth/Register.svelte",
     "isDynamicEntry": true,
@@ -399,7 +399,7 @@
     ]
   },
   "resources/js/pages/auth/ResetPassword.svelte": {
-    "file": "assets/ResetPassword-B8BQMJYt.js",
+    "file": "assets/ResetPassword-BF4Cz5_B.js",
     "name": "ResetPassword",
     "src": "resources/js/pages/auth/ResetPassword.svelte",
     "isDynamicEntry": true,
@@ -417,7 +417,7 @@
     ]
   },
   "resources/js/pages/auth/TwoFactorChallenge.svelte": {
-    "file": "assets/TwoFactorChallenge-M7TyOoai.js",
+    "file": "assets/TwoFactorChallenge-B3iC4sxq.js",
     "name": "TwoFactorChallenge",
     "src": "resources/js/pages/auth/TwoFactorChallenge.svelte",
     "isDynamicEntry": true,
@@ -432,7 +432,7 @@
     ]
   },
   "resources/js/pages/auth/VerifyEmail.svelte": {
-    "file": "assets/VerifyEmail-DqdUFrNW.js",
+    "file": "assets/VerifyEmail-C6tdc3hR.js",
     "name": "VerifyEmail",
     "src": "resources/js/pages/auth/VerifyEmail.svelte",
     "isDynamicEntry": true,
@@ -447,7 +447,7 @@
     ]
   },
   "resources/js/pages/body-scans/Index.svelte": {
-    "file": "assets/Index-DfCD2nvH.js",
+    "file": "assets/Index-BovtLbh0.js",
     "name": "Index",
     "src": "resources/js/pages/body-scans/Index.svelte",
     "isDynamicEntry": true,
@@ -464,7 +464,7 @@
     ]
   },
   "resources/js/pages/exercises/Index.svelte": {
-    "file": "assets/Index-DkvdXJQD.js",
+    "file": "assets/Index-B-LsWGgu.js",
     "name": "Index",
     "src": "resources/js/pages/exercises/Index.svelte",
     "isDynamicEntry": true,
@@ -488,7 +488,7 @@
     ]
   },
   "resources/js/pages/history/Index.svelte": {
-    "file": "assets/Index-D6fOFgQ6.js",
+    "file": "assets/Index-DdytzLsf.js",
     "name": "Index",
     "src": "resources/js/pages/history/Index.svelte",
     "isDynamicEntry": true,
@@ -503,7 +503,7 @@
     ]
   },
   "resources/js/pages/progress/Index.svelte": {
-    "file": "assets/Index-CzGYhTMG.js",
+    "file": "assets/Index-DeaBw_gU.js",
     "name": "Index",
     "src": "resources/js/pages/progress/Index.svelte",
     "isDynamicEntry": true,
@@ -517,7 +517,7 @@
     ]
   },
   "resources/js/pages/routines/Index.svelte": {
-    "file": "assets/Index-Ci4nQiKF.js",
+    "file": "assets/Index-P9YpNLqs.js",
     "name": "Index",
     "src": "resources/js/pages/routines/Index.svelte",
     "isDynamicEntry": true,
@@ -533,7 +533,7 @@
     ]
   },
   "resources/js/pages/routines/Show.svelte": {
-    "file": "assets/Show-DK99luFI.js",
+    "file": "assets/Show-D8VR1TLq.js",
     "name": "Show",
     "src": "resources/js/pages/routines/Show.svelte",
     "isDynamicEntry": true,
@@ -551,7 +551,7 @@
     ]
   },
   "resources/js/pages/settings/Appearance.svelte": {
-    "file": "assets/Appearance-BoFhWdQY.js",
+    "file": "assets/Appearance-LVjwDl6v.js",
     "name": "Appearance",
     "src": "resources/js/pages/settings/Appearance.svelte",
     "isDynamicEntry": true,
@@ -564,7 +564,7 @@
     ]
   },
   "resources/js/pages/settings/Profile.svelte": {
-    "file": "assets/Profile-e4jGqD2D.js",
+    "file": "assets/Profile-DwIFkMLR.js",
     "name": "Profile",
     "src": "resources/js/pages/settings/Profile.svelte",
     "isDynamicEntry": true,
@@ -584,7 +584,7 @@
     ]
   },
   "resources/js/pages/settings/Security.svelte": {
-    "file": "assets/Security-CMk1jGW3.js",
+    "file": "assets/Security-xXFkqIXX.js",
     "name": "Security",
     "src": "resources/js/pages/settings/Security.svelte",
     "isDynamicEntry": true,
@@ -607,7 +607,7 @@
     ]
   },
   "resources/js/pages/workout/Show.svelte": {
-    "file": "assets/Show-DmyCAHAz.js",
+    "file": "assets/Show-uuHqA4zn.js",
     "name": "Show",
     "src": "resources/js/pages/workout/Show.svelte",
     "isDynamicEntry": true,
