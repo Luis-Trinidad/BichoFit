@@ -37,6 +37,8 @@ class ExerciseController extends Controller
     /** Detalle completo (guía GIF + pasos) para el diálogo de información. */
     public function show(Request $request, Exercise $exercise)
     {
+        $this->authorize('view', $exercise);
+
         return response()->json([
             'id' => $exercise->id,
             'name' => $exercise->name,

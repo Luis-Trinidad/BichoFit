@@ -35,7 +35,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('history', [HistoryController::class, 'index'])->name('history.index');
 
     Route::get('body-scans', [BodyScanController::class, 'index'])->name('body-scans.index');
-    Route::post('body-scans/ocr', [BodyScanController::class, 'ocr'])->name('body-scans.ocr');
+    Route::post('body-scans/ocr', [BodyScanController::class, 'ocr'])
+        ->middleware('throttle:10,1')->name('body-scans.ocr');
     Route::post('body-scans', [BodyScanController::class, 'store'])->name('body-scans.store');
     Route::delete('body-scans/{scan}', [BodyScanController::class, 'destroy'])
         ->whereNumber('scan')->name('body-scans.destroy');
