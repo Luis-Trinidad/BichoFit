@@ -62,13 +62,20 @@
         muscleGroup: string;
         equipment?: string | null;
         imageUrl?: string | null;
-        target: string | null;
+        target: string | null; // objetivo original del servidor, tal cual
+        sets: string; // partes editables: se combinan en target solo al guardar
+        reps: string;
+        suffix: string; // rango del tipo "-12" en "3x8-12", intacto si no se edita
     }
 
     function toDraft(routineProp: RoutineProp) {
         return {
             name: routineProp.name,
-            items: routineProp.items.map((item) => ({ ...item, key: item.id, id: item.id })),
+            items: routineProp.items.map((item) => {
+                const { sets, reps, suffix } = parseItemTarget(item.target);
+
+                return { ...item, key: item.id, id: item.id, sets, reps, suffix };
+            }),
         };
     }
 
@@ -98,24 +105,29 @@
         })),
     );
 
-    /** Objetivo "4x10" → {sets:4, reps:10}. */
-    function parseItemTarget(target: string | null): { sets: string; reps: string } {
-        const match = /^(\d+)\s*[x×]\s*(\d+)/i.exec((target ?? '').trim());
+    /** Objetivo "4x10-12" → {sets:4, reps:10, suffix:'-12'} (el sufijo de rango se conserva). */
+    function parseItemTarget(target: string | null): { sets: string; reps: string; suffix: string } {
+        const match = /^(\d+)\s*[x×]\s*(\d+)(-\d+)?/i.exec((target ?? '').trim());
 
-        return match ? { sets: match[1], reps: match[2] } : { sets: '', reps: '' };
+        return match
+            ? { sets: match[1], reps: match[2], suffix: match[3] ?? '' }
+            : { sets: '', reps: '', suffix: '' };
     }
 
     function setTargetPart(key: number, part: 'sets' | 'reps', value: string) {
-        draft.items = draft.items.map((entry) => {
-            if (entry.key !== key) return entry;
-            const current = parseItemTarget(entry.target);
-            const next = { ...current, [part]: value };
+        draft.items = draft.items.map((entry) =>
+            entry.key === key ? { ...entry, [part]: value } : entry,
+        );
+    }
 
-            return {
-                ...entry,
-                target: next.sets !== '' && next.reps !== '' ? `${next.sets}x${next.reps}` : null,
-            };
-        });
+    /** Un objetivo que no sigue el formato NxM (p. ej. texto libre legado) se conserva tal cual. */
+    function targetOf(item: DraftItem): string | null {
+        if (item.sets !== '' && item.reps !== '') return `${item.sets}x${item.reps}${item.suffix}`;
+        if (item.sets === '' && item.reps === '' && item.target && !parseItemTarget(item.target).sets) {
+            return item.target;
+        }
+
+        return null;
     }
 
     function dayOfWeekOf(key: number): number {
@@ -154,6 +166,9 @@
             muscleGroup: option.muscle_group,
             imageUrl: option.imageUrl ?? null,
             target: null,
+            sets: '',
+            reps: '',
+            suffix: '',
         });
         collapsedDays = collapsedDays.filter((d) => d !== pickerDay);
     }
@@ -175,7 +190,7 @@
                 exercise_id: item.exerciseId,
                 day_of_week: item.dayOfWeek,
                 position: sameDay.findIndex((entry) => entry.key === item.key) + 1,
-                target: item.target,
+                target: targetOf(item),
             };
         });
 
@@ -330,7 +345,7 @@
                                     max="20"
                                     placeholder="4"
                                     class="h-8 w-14 text-center text-sm tabular-nums"
-                                    value={parseItemTarget(item.target).sets}
+                                    value={item.sets}
                                     oninput={(event) => setTargetPart(item.key, 'sets', event.currentTarget.value)}
                                     aria-label="Series del objetivo"
                                 />
@@ -342,7 +357,7 @@
                                     max="100"
                                     placeholder="10"
                                     class="h-8 w-14 text-center text-sm tabular-nums"
-                                    value={parseItemTarget(item.target).reps}
+                                    value={item.reps}
                                     oninput={(event) => setTargetPart(item.key, 'reps', event.currentTarget.value)}
                                     aria-label="Repeticiones del objetivo"
                                 />
