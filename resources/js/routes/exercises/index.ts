@@ -187,7 +187,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\ExerciseController::store
-* @see app/Http/Controllers/ExerciseController.php:55
+* @see app/Http/Controllers/ExerciseController.php:57
 * @route '/exercises'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -202,7 +202,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\ExerciseController::store
-* @see app/Http/Controllers/ExerciseController.php:55
+* @see app/Http/Controllers/ExerciseController.php:57
 * @route '/exercises'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -211,7 +211,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ExerciseController::store
-* @see app/Http/Controllers/ExerciseController.php:55
+* @see app/Http/Controllers/ExerciseController.php:57
 * @route '/exercises'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -221,7 +221,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\ExerciseController::store
-* @see app/Http/Controllers/ExerciseController.php:55
+* @see app/Http/Controllers/ExerciseController.php:57
 * @route '/exercises'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -231,7 +231,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\ExerciseController::store
-* @see app/Http/Controllers/ExerciseController.php:55
+* @see app/Http/Controllers/ExerciseController.php:57
 * @route '/exercises'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -243,7 +243,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\ExerciseController::destroy
-* @see app/Http/Controllers/ExerciseController.php:62
+* @see app/Http/Controllers/ExerciseController.php:64
 * @route '/exercises/{exercise}'
 */
 export const destroy = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -258,7 +258,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\ExerciseController::destroy
-* @see app/Http/Controllers/ExerciseController.php:62
+* @see app/Http/Controllers/ExerciseController.php:64
 * @route '/exercises/{exercise}'
 */
 destroy.url = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -291,7 +291,7 @@ destroy.url = (args: { exercise: number | { id: number } } | [exercise: number |
 
 /**
 * @see \App\Http\Controllers\ExerciseController::destroy
-* @see app/Http/Controllers/ExerciseController.php:62
+* @see app/Http/Controllers/ExerciseController.php:64
 * @route '/exercises/{exercise}'
 */
 destroy.delete = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -301,7 +301,7 @@ destroy.delete = (args: { exercise: number | { id: number } } | [exercise: numbe
 
 /**
 * @see \App\Http\Controllers\ExerciseController::destroy
-* @see app/Http/Controllers/ExerciseController.php:62
+* @see app/Http/Controllers/ExerciseController.php:64
 * @route '/exercises/{exercise}'
 */
 const destroyForm = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -316,7 +316,7 @@ const destroyForm = (args: { exercise: number | { id: number } } | [exercise: nu
 
 /**
 * @see \App\Http\Controllers\ExerciseController::destroy
-* @see app/Http/Controllers/ExerciseController.php:62
+* @see app/Http/Controllers/ExerciseController.php:64
 * @route '/exercises/{exercise}'
 */
 destroyForm.delete = (args: { exercise: number | { id: number } } | [exercise: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
